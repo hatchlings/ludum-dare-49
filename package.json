@@ -4,7 +4,7 @@
   "description": "starter for game jams using phaser 3.x",
   "main": "src/index.html",
   "scripts": {
-    "test": "tirekick",
+    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "parcel src/index.html",
     "build": "parcel build src/index.html"
   },
@@ -13,12 +13,21 @@
     "url": "git+https://github.com/TomorrowToday/phaser-jam-starter.git"
   },
   "author": "Steven Lischer",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/TomorrowToday/phaser-jam-starter/issues"
   },
   "homepage": "https://github.com/TomorrowToday/phaser-jam-starter#readme",
   "devDependencies": {
     "parcel-bundler": "^1.12.5"
+  },
+  "parcelCleanPaths": [
+    "dist"
+  ],
+  "staticFiles": {
+    "staticPath": "public"
+  },
+  "dependencies": {
+    "phaser": "^3.55.2"
   }
 }
