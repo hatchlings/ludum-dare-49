@@ -1,11 +1,17 @@
-import Phaser from "phaser";
+import { Scene } from "phaser";
 
-export default class HUDScene extends Phaser.Scene {
-  preload() {
-    // this.load.image('asset_name', 'public/assets/asset.webp');
+export class HUDScene extends Scene {
+
+  constructor() {
+    super({key: "HUDScene"});
   }
 
   create() {
-    // fun stuff goes here
+    console.log("It's HUD  time!")
   }
+
+  update(time, delta) {
+    
+  }
+
 }

@@ -1,11 +1,18 @@
-import Phaser from "phaser";
+import { Scene } from "phaser";
+import { Egg } from "../entities/egg";
 
-export default class GameScene extends Phaser.Scene {
-  preload() {
-    // this.load.image('asset_name', 'public/assets/asset.webp');
+export class GameScene extends Scene {
+
+  constructor() {
+    super({key: "GameScene"});
   }
 
   create() {
-    // fun stuff goes here
+    new Egg(this, 400, 300);
   }
+
+  update(time, delta) {
+
+  }
+
 }

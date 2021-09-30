@@ -1,11 +1,20 @@
 import Phaser from "phaser";
 
-export default class LoaderScene extends Phaser.Scene {
+export class LoaderScene extends Phaser.Scene {
+
+  constructor() {
+    super({key: "LoaderScene"});
+  }
+
   preload() {
-    // this.load.image('asset_name', 'public/assets/asset.webp');
+    /* Load all assets before jumping to game scene. */
+    this.load.image("darkblue", "/assets/darkblue.png");
   }
 
   create() {
-    // fun stuff goes here
+    /* Run HUD scene in parallel with game scene. */
+    this.scene.run("HUDScene");
+    this.scene.start("GameScene");
   }
+
 }

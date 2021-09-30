@@ -19,13 +19,16 @@
   },
   "homepage": "https://github.com/TomorrowToday/phaser-jam-starter#readme",
   "devDependencies": {
-    "parcel-bundler": "^1.12.5"
+    "less": "^4.1.1",
+    "parcel-bundler": "^1.12.5",
+    "parcel-plugin-static-files-copy": "^2.6.0"
   },
   "parcelCleanPaths": [
     "dist"
   ],
   "staticFiles": {
-    "staticPath": "public"
+    "staticPath": "public",
+    "watcherGlob": "**"
   },
   "dependencies": {
     "phaser": "^3.55.2"
