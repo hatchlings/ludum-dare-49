@@ -1,4 +1,5 @@
 import { Scene } from "phaser";
+import eventBus from "../util/eventbus";
 
 export class HUDScene extends Scene {
 
@@ -8,10 +9,15 @@ export class HUDScene extends Scene {
 
   create() {
     console.log("It's HUD  time!")
+
+    eventBus.on("game:egg", () => {
+      console.log("Egg did a thing!");
+    });
+
   }
 
   update(time, delta) {
-    
+
   }
 
 }

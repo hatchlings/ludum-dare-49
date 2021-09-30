@@ -1,3 +1,5 @@
+import eventBus from "../util/eventbus";
+
 export class Egg {
 
     constructor(scene, x, y) {
@@ -16,7 +18,10 @@ export class Egg {
             scale: 1.5,
             yoyo: true,
             ease: "Bounce.inOut",
-            repeat: -1
+            repeat: -1,
+            onRepeat: () => {
+                eventBus.emit("game:egg");
+            }
         });
     }
 
