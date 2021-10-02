@@ -9,8 +9,12 @@ export class GameScene extends Scene {
 
   create() {
     const c = new Character();
-    let s = c.applyEntropy(["EARTH", "EARTH", "WATER"]);
-    console.log(s);
+
+    for(let i = 0; i < 10; i++) {
+      let s = c.applyEntropy(["EARTH", "WATER", "FIRE"]);
+      console.log(s);
+    }
+
   }
 
   update(time, delta) {
