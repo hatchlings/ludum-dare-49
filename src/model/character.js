@@ -1,40 +1,39 @@
 import eventBus from '../util/eventbus';
 
-const BASE_STAT = 1;
+const BASE_STAT = 2;
 
 class Character {
-
     constructor() {
         this.stats = {
-            "EARTH": BASE_STAT,
-            "AIR": BASE_STAT,
-            "FIRE": BASE_STAT,
-            "WATER": BASE_STAT
-        }
+            EARTH: BASE_STAT,
+            AIR: BASE_STAT,
+            FIRE: BASE_STAT,
+            WATER: BASE_STAT,
+        };
 
         this.permanentStatBoosts = {
-            "EARTH": 0,
-            "AIR": 0,
-            "FIRE": 0,
-            "WATER": 0
-        }
+            EARTH: 0,
+            AIR: 0,
+            FIRE: 0,
+            WATER: 0,
+        };
 
+        this.deathCount = 0;
         this.entropy = 1;
         this.mapPosition = 0;
-        this.mapPositionName = "HOME";
-
+        this.mapPositionName = 'HOME';
     }
 
     applyPositionChange(pos, _data, name) {
-        if(name !== "HOME") {
-            if(this.mapPosition === 0 || pos === 0) {
+        if (name !== 'HOME') {
+            if (this.mapPosition === 0 || pos === 0) {
                 this.entropy += 1;
-            } else if(Math.abs(this.mapPosition - pos) === 2) {
+            } else if (Math.abs(this.mapPosition - pos) === 2) {
                 this.entropy += 2;
             } else {
                 this.entropy += 1;
             }
-            eventBus.emit("game:entropyUpdated");
+            eventBus.emit('game:entropyUpdated');
         }
 
         this.mapPosition = pos;
@@ -43,7 +42,7 @@ class Character {
 
     applyStat(stat, quantity) {
         this.stats[stat] += quantity;
-        eventBus.emit("game:statsUpdated");
+        eventBus.emit('game:statsUpdated');
     }
 
     applyPermanentStatBoost(stat, quantity) {
@@ -52,21 +51,23 @@ class Character {
 
     resetEntropy() {
         this.entropy = 1;
-        eventBus.emit("game:entropyUpdated");
+        eventBus.emit('game:entropyUpdated');
     }
-    
+
     resetForRound() {
-        this.stats["EARTH"] = BASE_STAT + this.permanentStatBoosts["EARTH"];
-        this.stats["AIR"] = BASE_STAT + this.permanentStatBoosts["AIR"];
-        this.stats["FIRE"] = BASE_STAT + this.permanentStatBoosts["FIRE"];
-        this.stats["WATER"] = BASE_STAT + this.permanentStatBoosts["WATER"];
+        this.stats['EARTH'] = BASE_STAT + this.permanentStatBoosts['EARTH'];
+        this.stats['AIR'] = BASE_STAT + this.permanentStatBoosts['AIR'];
+        this.stats['FIRE'] = BASE_STAT + this.permanentStatBoosts['FIRE'];
+        this.stats['WATER'] = BASE_STAT + this.permanentStatBoosts['WATER'];
+
+        this.deathCount += 1;
 
         this.mapPosition = 0;
-        this.mapPositionName = "HOME";
+        this.mapPositionName = 'HOME';
 
         this.resetEntropy();
+        eventBus.emit('game:roundReset');
     }
-
 }
 
 let character = new Character();

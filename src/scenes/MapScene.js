@@ -1,68 +1,69 @@
-import { Scene } from "phaser";
+import { Scene } from 'phaser';
 import { Entropy } from '../entities/entropy';
 import { MapCharacter } from '../entities/mapcharacter';
 import { MapIcon } from '../entities/mapicon';
 import { Stats } from '../entities/stats';
+import { Ressurections } from '../entities/ressurections';
 import gameManager from '../managers/gamemanager';
 
 const TRAVEL_POS = [
-  {x: 400, y: 100},
-  {x: 700, y: 300},
-  {x: 400, y: 500},
-  {x: 100, y: 300}
-]
-
-const LOCATIONS = [
-  "EARTH",
-  "AIR",
-  "FIRE",
-  "WATER"
+    { x: 400, y: 100 },
+    { x: 700, y: 300 },
+    { x: 400, y: 500 },
+    { x: 100, y: 300 },
 ];
 
+const LOCATIONS = ['EARTH', 'AIR', 'FIRE', 'WATER'];
+
 export class MapScene extends Scene {
+    constructor() {
+        super({ key: 'MapScene' });
 
-  constructor() {
-    super({key: "MapScene"});
-    
-    gameManager.setScene(this);
+        gameManager.setScene(this);
 
-    this.travelPoints = [];
-  }
+        this.travelPoints = [];
+    }
 
-  create() {
-    this.background = this.add.image(400, 300, "background");
+    create() {
+        this.background = this.add.image(400, 300, 'background');
 
-    this.stats = new Stats(this);
-    this.entropy = new Entropy(this);
+        this.stats = new Stats(this);
+        this.ressurections = new Ressurections(this);
+        this.entropy = new Entropy(this);
 
-    this.addTravelPoints();
-    this.addCharacter();
+        this.addTravelPoints();
+        this.addCharacter();
 
-    this.input.keyboard.on("keyup-B", () => {
-      this.scene.start("GameScene");
-    });
+        this.input.keyboard.on('keyup-B', () => {
+            this.scene.start('GameScene');
+        });
+    }
 
-  }
+    addCharacter() {
+        this.character = new MapCharacter(this, 400, 300);
+    }
 
-  addCharacter() {
-    this.character = new MapCharacter(this, 400, 300);
-  }
+    addTravelPoints() {
+        const home = new MapIcon(this, 400, 300, 'HOME', 0);
+        this.travelPoints.push(home);
 
-  addTravelPoints() {
-    const home = new MapIcon(this, 400, 300, "HOME", 0);
-    this.travelPoints.push(home);
+        LOCATIONS.forEach((location, index) => {
+            const tp = new MapIcon(
+                this,
+                TRAVEL_POS[index].x,
+                TRAVEL_POS[index].y,
+                location,
+                index + 1
+            );
+            this.travelPoints.push(tp);
+        });
+    }
 
-    LOCATIONS.forEach((location, index) => {
-      const tp = new MapIcon(this, TRAVEL_POS[index].x, TRAVEL_POS[index].y, location, index + 1);
-      this.travelPoints.push(tp);
-    });
-  }
-
-  returnHome() {
-    this.character.cleanup();
-    this.stats.cleanup();
-    this.entropy.cleanup();
-    this.scene.start("GameScene");
-  }
-
+    returnHome() {
+        this.character.cleanup();
+        this.stats.cleanup();
+        this.ressurections.cleanup();
+        this.entropy.cleanup();
+        this.scene.start('GameScene');
+    }
 }
