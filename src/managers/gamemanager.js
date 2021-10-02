@@ -40,21 +40,6 @@ class GameManager {
                 character.resetEntropy();
                 eventBus.emit("game:enableInput");
             }
-        } else if(character.entropy >= 6) {
-            this.applyStatBonus();
-            this.rollForChaos();
-            if(this.isDead()) {
-                console.log("Oops, you died!");
-                this.rollForPermenantStatBoost()
-                this.handleDeath();
-            } else {
-                if(character.entropy >= 6) {
-                    console.log("Maxed out entropy, forcing home.");
-                    this.forceHome();
-                } else {
-                    eventBus.emit("game:enableInput");
-                }
-            }
         } else {
             this.applyStatBonus();
             this.rollForChaos();
@@ -63,7 +48,12 @@ class GameManager {
                 this.rollForPermenantStatBoost();
                 this.handleDeath();
             } else {
-                eventBus.emit("game:enableInput");
+                if(character.entropy >= 6) {
+                    console.log("Maxed out entropy, forcing home.");
+                    this.forceHome();
+                } else {
+                    eventBus.emit("game:enableInput");
+                }
             }
         }
     }
