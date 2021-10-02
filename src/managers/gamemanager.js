@@ -1,7 +1,5 @@
-import character from '../model/character';
+import { character, STAT_TYPES } from '../model/character';
 import eventBus from '../util/eventbus';
-
-const STAT_TYPES = ['EARTH', 'AIR', 'FIRE', 'WATER'];
 
 class GameManager {
     constructor() {
@@ -32,10 +30,10 @@ class GameManager {
             this.applyEntropy();
             if (this.isDead()) {
                 console.log('Oops, you died!');
-                this.rollForPermenantStatBoost();
+                character.randomBoonOrBane();
                 this.handleDeath();
             } else {
-                character.resetEntropy();
+                //character.resetEntropy();
                 eventBus.emit('game:enableInput');
             }
         } else {
@@ -43,7 +41,7 @@ class GameManager {
             this.rollForChaos();
             if (this.isDead()) {
                 console.log('Oops, you died!');
-                this.rollForPermenantStatBoost();
+                character.randomBoonOrBane();
                 this.handleDeath();
             } else {
                 if (character.entropy >= 6) {
@@ -66,7 +64,7 @@ class GameManager {
 
     applyEntropy() {
         for (let i = 0; i < character.entropy; i++) {
-            const roll = Phaser.Math.RND.between(1, 8);
+            const roll = Phaser.Math.RND.between(1, 6);
             if (roll < 5) {
                 const type = STAT_TYPES[roll - 1];
                 character.applyStat(type, -1);
@@ -98,7 +96,6 @@ class GameManager {
                 console.log(`Chaos rolled: ${roll}. No stat deducted.`);
             }
         }
-        character.resetEntropy();
     }
 
     isDead() {
@@ -108,13 +105,6 @@ class GameManager {
             character.stats['FIRE'] <= 0 ||
             character.stats['WATER'] <= 0
         );
-    }
-
-    rollForPermenantStatBoost() {
-        const roll = Phaser.Math.RND.between(1, 4);
-        const type = STAT_TYPES[roll - 1];
-        character.applyPermanentStatBoost(type, 1);
-        console.log(`Permenant stat boost for dying: +1 ${type}.`);
     }
 
     handleDeath() {

@@ -1,6 +1,7 @@
 import eventBus from '../util/eventbus';
 
 const BASE_STAT = 2;
+export const STAT_TYPES = ['EARTH', 'AIR', 'FIRE', 'WATER'];
 
 class Character {
     constructor() {
@@ -25,17 +26,6 @@ class Character {
     }
 
     applyPositionChange(pos, _data, name) {
-        if (name !== 'HOME') {
-            if (this.mapPosition === 0 || pos === 0) {
-                this.entropy += 1;
-            } else if (Math.abs(this.mapPosition - pos) === 2) {
-                this.entropy += 2;
-            } else {
-                this.entropy += 1;
-            }
-            eventBus.emit('game:entropyUpdated');
-        }
-
         this.mapPosition = pos;
         this.mapPositionName = name;
     }
@@ -48,24 +38,31 @@ class Character {
     applyPermanentStatBoost(stat, quantity) {
         this.permanentStatBoosts[stat] += quantity;
     }
+    applyRndBane() {
+        this.entropy += Phaser.Math.RND.pick([-1, 1]);
+    }
 
-    resetEntropy() {
-        this.entropy = 1;
+    applyRndBoon() {
+        let stat = Phaser.Math.RND.pick(Object.keys(this.stats));
+        this.applyPermanentStatBoost(stat, Phaser.Math.RND.pick([1, 2]));
+    }
+
+    randomBoonOrBane() {
+        let baneOrBoon = Phaser.Math.RND.pick([this.applyRndBane, this.applyRndBoon]);
+        baneOrBoon();
         eventBus.emit('game:entropyUpdated');
     }
 
     resetForRound() {
-        this.stats['EARTH'] = BASE_STAT + this.permanentStatBoosts['EARTH'];
-        this.stats['AIR'] = BASE_STAT + this.permanentStatBoosts['AIR'];
-        this.stats['FIRE'] = BASE_STAT + this.permanentStatBoosts['FIRE'];
-        this.stats['WATER'] = BASE_STAT + this.permanentStatBoosts['WATER'];
+        STAT_TYPES.foreach((type) => {
+            this.stats[type] = BASE_STAT + this.permanentStatBoosts[type];
+        });
 
         this.deathCount += 1;
 
         this.mapPosition = 0;
         this.mapPositionName = 'HOME';
 
-        this.resetEntropy();
         eventBus.emit('game:roundReset');
     }
 }
