@@ -21,7 +21,7 @@ class Character {
 
         this.deathCount = 0;
         
-        this.entropyCapacity = 3;
+        this.entropyCapacity = 5;
 
         this.entropy = 0;
         this.mapPosition = 0;
