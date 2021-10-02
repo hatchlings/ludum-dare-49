@@ -48,8 +48,12 @@ class GameManager {
                 this.rollForPermenantStatBoost()
                 this.handleDeath();
             } else {
-                console.log("Maxed out entropy, forcing home.");
-                this.forceHome();
+                if(character.entropy >= 6) {
+                    console.log("Maxed out entropy, forcing home.");
+                    this.forceHome();
+                } else {
+                    eventBus.emit("game:enableInput");
+                }
             }
         } else {
             this.applyStatBonus();
@@ -106,6 +110,7 @@ class GameManager {
                 console.log(`Chaos rolled: ${roll}. No stat deducted.`);
             }
         }
+        character.resetEntropy();
     }
 
     isDead() {
@@ -123,9 +128,11 @@ class GameManager {
     }
     
     handleDeath() {
-        character.resetForRound();
-        this.mapScene.returnHome();
-        eventBus.emit("game:enableInput");
+        setTimeout(() => {
+            character.resetForRound();
+            this.mapScene.returnHome();
+            eventBus.emit("game:enableInput");
+        }, 2000);
     }
 
     forceHome() {

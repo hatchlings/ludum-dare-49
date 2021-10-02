@@ -20,6 +20,8 @@ export class MapIcon {
 
         this.sprite.setInteractive();
         this.sprite.on('pointerup', this.handleSelect.bind(this));
+
+        this.scene.add.text(this.x - 20, this.y, this.type);
     }
 
     handleSelect() {

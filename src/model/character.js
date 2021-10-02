@@ -1,3 +1,4 @@
+import eventBus from '../util/eventbus';
 
 const BASE_STAT = 1;
 
@@ -33,6 +34,7 @@ class Character {
             } else {
                 this.entropy += 1;
             }
+            eventBus.emit("game:entropyUpdated");
         }
 
         this.mapPosition = pos;
@@ -41,6 +43,7 @@ class Character {
 
     applyStat(stat, quantity) {
         this.stats[stat] += quantity;
+        eventBus.emit("game:statsUpdated");
     }
 
     applyPermanentStatBoost(stat, quantity) {
@@ -49,6 +52,7 @@ class Character {
 
     resetEntropy() {
         this.entropy = 1;
+        eventBus.emit("game:entropyUpdated");
     }
     
     resetForRound() {
@@ -56,7 +60,10 @@ class Character {
         this.stats["AIR"] = BASE_STAT + this.permanentStatBoosts["AIR"];
         this.stats["FIRE"] = BASE_STAT + this.permanentStatBoosts["FIRE"];
         this.stats["WATER"] = BASE_STAT + this.permanentStatBoosts["WATER"];
+
+        this.mapPosition = 0;
         this.mapPositionName = "HOME";
+
         this.resetEntropy();
     }
 

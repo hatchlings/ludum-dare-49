@@ -1,6 +1,8 @@
 import { Scene } from "phaser";
+import { Entropy } from '../entities/entropy';
 import { MapCharacter } from '../entities/mapcharacter';
 import { MapIcon } from '../entities/mapicon';
+import { Stats } from '../entities/stats';
 import gameManager from '../managers/gamemanager';
 
 const TRAVEL_POS = [
@@ -29,6 +31,10 @@ export class MapScene extends Scene {
 
   create() {
     this.background = this.add.image(400, 300, "background");
+
+    this.stats = new Stats(this);
+    this.entropy = new Entropy(this);
+
     this.addTravelPoints();
     this.addCharacter();
 
@@ -54,6 +60,8 @@ export class MapScene extends Scene {
 
   returnHome() {
     this.character.cleanup();
+    this.stats.cleanup();
+    this.entropy.cleanup();
     this.scene.start("GameScene");
   }
 
