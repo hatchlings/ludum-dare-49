@@ -12,8 +12,6 @@ export class LoaderScene extends Phaser.Scene {
   }
 
   create() {
-    /* Run HUD scene in parallel with game scene. */
-    this.scene.run("HUDScene");
     this.scene.start("GameScene");
   }
 
