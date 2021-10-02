@@ -29,7 +29,8 @@ export class Character {
         for(let i = 0; i < quantity + 1; i++) {
             const shouldDeduct = Phaser.Math.RND.between(1, 6);
             if(shouldDeduct < 5) {
-                this.stats[STAT_TYPES[shouldDeduct - 1]] -= 1;
+                const type = STAT_TYPES[shouldDeduct - 1]
+                this.stats[type] -= 1;
             }
         }
     }
