@@ -26,6 +26,7 @@ class GameManager {
         console.log(
             `STATS: Earth: ${character.stats['EARTH']} Air: ${character.stats['AIR']} FIRE: ${character.stats['FIRE']} Water: ${character.stats['WATER']}`
         );
+
         if (character.mapPositionName === 'HOME') {
             this.applyEntropy();
             if (this.isDead()) {
@@ -33,12 +34,16 @@ class GameManager {
                 character.randomBoonOrBane();
                 this.handleDeath();
             } else {
-                //character.resetEntropy();
+                character.resetCurrentEntropy();
                 eventBus.emit('game:enableInput');
             }
         } else {
             this.applyStatBonus();
-            this.rollForChaos();
+            if(character.entropy === character.entropyCapacity) {
+                this.applyChaos()
+            } else {
+                this.rollForChaos();
+            }
             if (this.isDead()) {
                 console.log('Oops, you died!');
                 character.randomBoonOrBane();
@@ -86,7 +91,7 @@ class GameManager {
     }
 
     applyChaos() {
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < character.entropyCapacity; i++) {
             const roll = Phaser.Math.RND.between(1, 6);
             if (roll < 5) {
                 const type = STAT_TYPES[roll - 1];
@@ -96,6 +101,7 @@ class GameManager {
                 console.log(`Chaos rolled: ${roll}. No stat deducted.`);
             }
         }
+        character.resetCurrentEntropy();
     }
 
     isDead() {

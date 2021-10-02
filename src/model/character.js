@@ -20,6 +20,9 @@ class Character {
         };
 
         this.deathCount = 0;
+        
+        this.entropyCapacity = 3;
+
         this.entropy = 0;
         this.mapPosition = 0;
         this.mapPositionName = 'HOME';
@@ -28,11 +31,11 @@ class Character {
     applyPositionChange(pos, _data, name) {
         if (name !== 'HOME') {
             if (this.mapPosition === 0 || pos === 0) {
-                this.entropy += 1;
+                this.entropy = Phaser.Math.Clamp(this.entropy + 1, 0, this.entropyCapacity);
             } else if (Math.abs(this.mapPosition - pos) === 2) {
-                this.entropy += 2;
+                this.entropy = Phaser.Math.Clamp(this.entropy + 2, 0, this.entropyCapacity);
             } else {
-                this.entropy += 1;
+                this.entropy = Phaser.Math.Clamp(this.entropy + 1, 0, this.entropyCapacity);
             }
             eventBus.emit('game:entropyUpdated');
         }
@@ -50,7 +53,7 @@ class Character {
     }
 
     applyRndBane() {
-        this.entropy += Phaser.Math.RND.pick([-1, 1]);
+        this.entropyCapacity += Phaser.Math.RND.pick([-1, 1]);
     }
 
     applyRndBoon() {
@@ -64,13 +67,18 @@ class Character {
         eventBus.emit('game:entropyUpdated');
     }
 
+    resetCurrentEntropy() {
+        this.entropy = 0;
+        eventBus.emit('game:entropyUpdated');
+    }
+
     resetForRound() {
         STAT_TYPES.forEach((type) => {
             this.stats[type] = BASE_STAT + this.permanentStatBoosts[type];
         });
 
         this.deathCount += 1;
-        this.entropy = this.deathCount;
+        this.entropy = 0;
 
         this.mapPosition = 0;
         this.mapPositionName = 'HOME';

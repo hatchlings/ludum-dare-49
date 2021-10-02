@@ -19,15 +19,15 @@ export class Entropy {
     }
 
     createEntropy() {
-        this.entropy = this.scene.add.text(680, 50, `Entropy: ${character.entropy}`);
+        this.entropy = this.scene.add.text(650, 50, `Entropy: ${character.entropy}/${character.entropyCapacity}`);
     }
 
     updateEntropy() {
-        this.entropy.text = `Entropy: ${character.entropy}`;
+        this.entropy.text = `Entropy: ${character.entropy}/${character.entropyCapacity}`;
     }
 
     cleanup() {
-        eventBus.off("game:entropyUpdated", this.onStatsUpdated);
+        eventBus.off("game:entropyUpdated", this.onEntropyUpdated);
     }
 
 }
