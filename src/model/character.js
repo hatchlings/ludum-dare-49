@@ -1,6 +1,6 @@
 import eventBus from '../util/eventbus';
 
-const BASE_STAT = 2;
+const BASE_STAT = 7;
 export const STAT_TYPES = ['EARTH', 'AIR', 'FIRE', 'WATER'];
 
 class Character {
@@ -20,25 +20,41 @@ class Character {
         };
 
         this.deathCount = 0;
-        
-        this.entropyCapacity = 3;
 
-        this.entropy = 0;
+        this.entropyCapacity = 300;
+        this.tamingPowerBoost = 0;
+        this.entropy = 100;
         this.mapPosition = 0;
         this.mapPositionName = 'HOME';
     }
 
     applyPositionChange(pos, _data, name) {
         if (name !== 'HOME') {
-            if (this.mapPosition === 0 || pos === 0) {
-                this.entropy = Phaser.Math.Clamp(this.entropy + 1, 0, this.entropyCapacity);
-            } else if (Math.abs(this.mapPosition - pos) === 2) {
-                this.entropy = Phaser.Math.Clamp(this.entropy + 2, 0, this.entropyCapacity);
-            } else {
-                this.entropy = Phaser.Math.Clamp(this.entropy + 1, 0, this.entropyCapacity);
-            }
-            eventBus.emit('game:entropyUpdated');
+            this.entropy += Phaser.Math.RND.between(8, 20);
+            STAT_TYPES.forEach((type) => {
+                this.stats[type] += Phaser.Math.RND.between(-3, 3);
+                if (this.stats[type] < 0) this.stats[type] = 0;
+            });
+        } else {
+            let sum = 0;
+            let flux = 0;
+            let prev = 0;
+            Object.values(this.stats).forEach((val) => {
+                sum += val;
+                flux = Math.abs(val - prev);
+            });
+            console.log(`Taming power: ${sum / 4} with Flux reduction:${flux / 4}`);
+            this.entropy -= parseInt((sum - flux) / 4);
+            this.tamingPowerBoost = this.tamingPowerBoost >= 5 ? 5 : (this.tamingPowerBoost += 1);
+            this.stats = {
+                EARTH: BASE_STAT + this.tamingPowerBoost,
+                AIR: BASE_STAT + this.tamingPowerBoost,
+                FIRE: BASE_STAT + this.tamingPowerBoost,
+                WATER: BASE_STAT + this.tamingPowerBoost,
+            };
         }
+        eventBus.emit('game:entropyUpdated');
+        eventBus.emit('game:statsUpdated');
         this.mapPosition = pos;
         this.mapPositionName = name;
     }
@@ -78,7 +94,7 @@ class Character {
         });
 
         this.deathCount += 1;
-        this.entropy = 0;
+        this.entropy = 200;
 
         this.mapPosition = 0;
         this.mapPositionName = 'HOME';

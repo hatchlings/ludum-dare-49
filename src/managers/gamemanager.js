@@ -28,29 +28,29 @@ class GameManager {
         );
 
         if (character.mapPositionName === 'HOME') {
-            this.applyEntropy();
+            //this.applyEntropy();
             if (this.isDead()) {
                 console.log('Oops, you died!');
                 character.randomBoonOrBane();
                 this.handleDeath();
             } else {
-                character.resetCurrentEntropy();
+                //character.resetCurrentEntropy();
                 eventBus.emit('game:enableInput');
             }
         } else {
             this.applyStatBonus();
-            if(character.entropy === character.entropyCapacity) {
-                this.applyChaos()
+            if (character.entropy === character.entropyCapacity) {
+                //this.applyChaos();
             } else {
-                this.rollForChaos();
+                //this.rollForChaos();
             }
             if (this.isDead()) {
                 console.log('Oops, you died!');
                 character.randomBoonOrBane();
                 this.handleDeath();
             } else {
-                if (character.entropy >= 6) {
-                    console.log('Maxed out entropy, forcing home.');
+                if (character.entropy >= character.entropyCapacity) {
+                    console.log('Maxed out Chaos, Try Again.');
                     this.forceHome();
                 } else {
                     eventBus.emit('game:enableInput');
@@ -61,9 +61,9 @@ class GameManager {
 
     applyStatBonus() {
         const type = character.mapPositionName;
-        const extra = Phaser.Math.RND.pick([0, 0, 0, 1]);
-        const quantity = 1 + extra;
-        character.applyStat(type, quantity);
+        const boost = Phaser.Math.RND.between(10, 20);
+        const quantity = boost;
+        character.applyStat(type, boost);
         console.log(`${type} increased by ${quantity}. ${type} is now ${character.stats[type]}.`);
     }
 
