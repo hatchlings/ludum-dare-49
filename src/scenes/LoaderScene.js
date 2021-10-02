@@ -1,6 +1,6 @@
-import Phaser from "phaser";
+import { Scene } from "phaser";
 
-export class LoaderScene extends Phaser.Scene {
+export class LoaderScene extends Scene {
 
   constructor() {
     super({key: "LoaderScene"});
@@ -9,6 +9,7 @@ export class LoaderScene extends Phaser.Scene {
   preload() {
     /* Load all assets before jumping to game scene. */
     this.load.image("darkblue", "/assets/darkblue.png");
+    this.load.image("background", "/assets/grass.png");
   }
 
   create() {

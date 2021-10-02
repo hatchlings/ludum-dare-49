@@ -15,6 +15,10 @@ export class GameScene extends Scene {
       console.log(s);
     }
 
+    this.input.on("pointerup", () => {
+      this.scene.start("MapScene");
+    });
+
   }
 
   update(time, delta) {

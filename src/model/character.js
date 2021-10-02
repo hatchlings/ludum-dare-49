@@ -26,7 +26,7 @@ export class Character {
     }
 
     applyNegativeEntropy(quantity) {
-        for(let i = 0; i < quantity + 1; i++) {
+        for(let i = 0; i < quantity; i++) {
             const shouldDeduct = Phaser.Math.RND.between(1, 6);
             if(shouldDeduct < 5) {
                 const type = STAT_TYPES[shouldDeduct - 1]

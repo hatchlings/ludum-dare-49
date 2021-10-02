@@ -1,6 +1,6 @@
-import { LoaderScene } from "./scenes/LoaderScene";
-import { HUDScene } from "./scenes/HUDScene";
 import { GameScene } from "./scenes/GameScene";
+import { LoaderScene } from "./scenes/LoaderScene";
+import { MapScene } from "./scenes/MapScene";
 
 export const gameConfig = {
   type: Phaser.AUTO,
@@ -16,7 +16,7 @@ export const gameConfig = {
   },
   scene: [
     LoaderScene,
-    HUDScene,
+    MapScene,
     GameScene
   ]
 };
