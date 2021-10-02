@@ -1,5 +1,5 @@
 import { Scene } from "phaser";
-import { Egg } from "../entities/egg";
+import { Character } from '../model/character';
 
 export class GameScene extends Scene {
 
@@ -8,11 +8,13 @@ export class GameScene extends Scene {
   }
 
   create() {
-    new Egg(this, 400, 300);
+    const c = new Character();
+    let s = c.applyEntropy(["EARTH", "EARTH", "WATER"]);
+    console.log(s);
   }
 
   update(time, delta) {
-
+    
   }
 
 }
