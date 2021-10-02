@@ -1,3 +1,4 @@
+import eventBus from "../util/eventbus";
 
 export class MapIcon {
 
@@ -12,13 +13,17 @@ export class MapIcon {
 
     addToScene() {
         this.sprite = this.scene.add.sprite(this.x, this.y, "darkblue");
-        
+
         this.sprite.setInteractive();
         this.sprite.on('pointerup', this.handleSelect.bind(this));
     }
 
     handleSelect() {
-        console.log("clicked!");
+        this.applyAssociatedEntropy();
+    }
+
+    applyAssociatedEntropy() {
+        eventBus.emit("game:entropyGained", this.type);
     }
 
 }

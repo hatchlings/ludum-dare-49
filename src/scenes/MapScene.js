@@ -26,11 +26,17 @@ export class MapScene extends Scene {
   create() {
     this.background = this.add.image(400, 300, "background");
     this.addTravelPoints();
+
+    this.input.keyboard.on("keyup-B", () => {
+      this.scene.start("GameScene");
+    });
+
   }
 
   addTravelPoints() {
     LOCATIONS.forEach((location, index) => {
       const tp = new MapIcon(this, TRAVEL_POS[index].x, TRAVEL_POS[index].y, location);
+      this.travelPoints.push(tp);
     });
   }
 
