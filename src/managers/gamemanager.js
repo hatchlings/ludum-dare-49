@@ -1,4 +1,4 @@
-import { character, STAT_TYPES } from '../model/character';
+import character, { STAT_TYPES } from '../model/character';
 import eventBus from '../util/eventbus';
 
 class GameManager {
