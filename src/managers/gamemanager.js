@@ -38,7 +38,7 @@ class GameManager {
                 character.resetEntropy();
                 eventBus.emit('game:enableInput');
             }
-        } else if (character.entropy >= 6) {
+        } else {
             this.applyStatBonus();
             this.rollForChaos();
             if (this.isDead()) {
@@ -52,16 +52,6 @@ class GameManager {
                 } else {
                     eventBus.emit('game:enableInput');
                 }
-            }
-        } else {
-            this.applyStatBonus();
-            this.rollForChaos();
-            if (this.isDead()) {
-                console.log('Oops, you died!');
-                this.rollForPermenantStatBoost();
-                this.handleDeath();
-            } else {
-                eventBus.emit('game:enableInput');
             }
         }
     }
