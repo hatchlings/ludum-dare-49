@@ -23,6 +23,13 @@ class Character {
         
         this.entropyCapacity = 5;
 
+        this.fortune = 10;
+
+        this.staffName = "Basic Staff";
+        this.staffStats = [-1, -1, 0, 1];
+
+        this.shield = 0;
+
         this.entropy = 0;
         this.mapPosition = 0;
         this.mapPositionName = 'HOME';
@@ -72,6 +79,33 @@ class Character {
         eventBus.emit('game:entropyUpdated');
     }
 
+    addFortune() {
+        this.fortune += 1;
+        eventBus.emit('game:fortuneUpdated');
+    }
+
+    removeFortune(quantity) {
+        this.fortune -= quantity;
+        eventBus.emit('game:fortuneUpdated');
+    }
+
+    setStaffStats(stats, name) {
+        this.staffStats = stats;
+        this.staffName = name;
+    }
+
+    setShieldDurability(amount) {
+        this.shield += amount;
+    }
+    
+    reduceShieldDurability() {
+        this.shield -= 1;
+    }
+
+    updateEntropyPool(amount) {
+        this.entropyCapacity += amount;
+    }
+
     resetForRound() {
         STAT_TYPES.forEach((type) => {
             this.stats[type] = BASE_STAT + this.permanentStatBoosts[type];
@@ -82,6 +116,11 @@ class Character {
 
         this.mapPosition = 0;
         this.mapPositionName = 'HOME';
+
+        this.staffName = "Basic Staff";
+        this.staffStats = [-1, -1, 0, 1];
+
+        this.shield = 0;
 
         eventBus.emit('game:roundReset');
     }

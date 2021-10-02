@@ -1,5 +1,5 @@
-import { GameScene } from "./scenes/GameScene";
 import { LoaderScene } from "./scenes/LoaderScene";
+import { MainScene } from "./scenes/MainScene";
 import { MapScene } from "./scenes/MapScene";
 
 export const gameConfig = {
@@ -17,6 +17,6 @@ export const gameConfig = {
   scene: [
     LoaderScene,
     MapScene,
-    GameScene
+    MainScene
   ]
 };

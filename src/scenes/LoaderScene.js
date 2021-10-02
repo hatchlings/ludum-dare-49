@@ -26,7 +26,7 @@ export class LoaderScene extends Scene {
   }
 
   create() {
-    this.scene.start("GameScene");
+    this.scene.start("MainScene");
   }
 
 }

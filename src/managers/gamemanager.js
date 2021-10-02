@@ -61,9 +61,17 @@ class GameManager {
 
     applyStatBonus() {
         const type = character.mapPositionName;
-        const extra = Phaser.Math.RND.pick([0, 0, 0, 1]);
+        const extra = Phaser.Math.RND.pick(character.staffStats);
         const quantity = 1 + extra;
+
+        if(quantity <= 0) {
+            console.log(`${character.staffName} failed! Stats: ${character.staffStats}.`);
+        }
+        
         character.applyStat(type, quantity);
+        character.addFortune();
+        
+        eventBus.emit('game:fortuneUpdated');
         console.log(`${type} increased by ${quantity}. ${type} is now ${character.stats[type]}.`);
     }
 
@@ -95,8 +103,13 @@ class GameManager {
             const roll = Phaser.Math.RND.between(1, 6);
             if (roll < 5) {
                 const type = STAT_TYPES[roll - 1];
-                character.applyStat(type, -1);
-                console.log(`Chaos rolled: ${roll}. -1 ${type}.`);
+                if(character.shield > 0) {
+                    character.reduceShieldDurability();
+                    console.log(`Shield blocked Chaos hit to ${type}! Remaining shield: ${character.shield}`);
+                } else {
+                    character.applyStat(type, -1);
+                    console.log(`Chaos rolled: ${roll}. -1 ${type}.`);
+                }
             } else {
                 console.log(`Chaos rolled: ${roll}. No stat deducted.`);
             }

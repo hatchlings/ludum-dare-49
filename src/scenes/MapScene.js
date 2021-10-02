@@ -1,9 +1,10 @@
 import { Scene } from 'phaser';
 import { Entropy } from '../entities/entropy';
+import { Fortune } from '../entities/fortune';
 import { MapCharacter } from '../entities/mapcharacter';
 import { MapIcon } from '../entities/mapicon';
-import { Stats } from '../entities/stats';
 import { Ressurections } from '../entities/ressurections';
+import { Stats } from '../entities/stats';
 import gameManager from '../managers/gamemanager';
 
 const TRAVEL_POS = [
@@ -30,12 +31,13 @@ export class MapScene extends Scene {
         this.stats = new Stats(this);
         this.ressurections = new Ressurections(this);
         this.entropy = new Entropy(this);
+        this.fortune = new Fortune(this, 360, 20);
 
         this.addTravelPoints();
         this.addCharacter();
 
         this.input.keyboard.on('keyup-B', () => {
-            this.scene.start('GameScene');
+            this.scene.start('MainScene');
         });
     }
 
@@ -64,6 +66,7 @@ export class MapScene extends Scene {
         this.stats.cleanup();
         this.ressurections.cleanup();
         this.entropy.cleanup();
-        this.scene.start('GameScene');
+        this.fortune.cleanup();
+        this.scene.start('MainScene');
     }
 }
