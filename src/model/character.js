@@ -1,13 +1,5 @@
-import Phaser from "phaser";
-import eventBus from '../util/eventbus';
 
-const BASE_STAT = 3;
-const STAT_TYPES = [
-    "EARTH",
-    "AIR",
-    "FIRE",
-    "WATER"
-];
+const BASE_STAT = 1;
 
 class Character {
 
@@ -19,40 +11,53 @@ class Character {
             "WATER": BASE_STAT
         }
 
-        this.setupListeners();
+        this.permanentStatBoosts = {
+            "EARTH": 0,
+            "AIR": 0,
+            "FIRE": 0,
+            "WATER": 0
+        }
+
+        this.entropy = 1;
+        this.mapPosition = 0;
+        this.mapPositionName = "HOME";
+
     }
 
-    setupListeners() {
-        eventBus.on("game:entropyGained", (type) => {
-            this.applyEntropy([type]);
-            console.log(this.stats);
-        });
-    }
-
-    applyEntropy(kinds) {
-        this.applyNegativeEntropy(kinds.length);
-        this.applyPositiveEntropy(kinds);
-        return this.stats;
-    }
-
-    applyNegativeEntropy(quantity) {
-        for(let i = 0; i < quantity; i++) {
-            const shouldDeduct = Phaser.Math.RND.between(1, 6);
-            if(shouldDeduct < 5) {
-                const type = STAT_TYPES[shouldDeduct - 1]
-                console.log(`Deducting 1 entropy of type: ${type}`);
-                this.stats[type] -= 1;
+    applyPositionChange(pos, _data, name) {
+        if(name !== "HOME") {
+            if(this.mapPosition === 0 || pos === 0) {
+                this.entropy += 1;
+            } else if(Math.abs(this.mapPosition - pos) === 2) {
+                this.entropy += 2;
+            } else {
+                this.entropy += 1;
             }
         }
+
+        this.mapPosition = pos;
+        this.mapPositionName = name;
     }
 
-    applyPositiveEntropy(kinds) {
-        kinds.forEach((kind) => {
-            const chanceForExtra = Phaser.Math.RND.pick([0, 0, 0, 1]);
-            const quantity = (1 + chanceForExtra);
-            this.stats[kind] += (1 + chanceForExtra);
-            console.log(`Applying ${quantity} entropy of type: ${kind}`);
-        });
+    applyStat(stat, quantity) {
+        this.stats[stat] += quantity;
+    }
+
+    applyPermanentStatBoost(stat, quantity) {
+        this.permanentStatBoosts[stat] += quantity;
+    }
+
+    resetEntropy() {
+        this.entropy = 1;
+    }
+    
+    resetForRound() {
+        this.stats["EARTH"] = BASE_STAT + this.permanentStatBoosts["EARTH"];
+        this.stats["AIR"] = BASE_STAT + this.permanentStatBoosts["AIR"];
+        this.stats["FIRE"] = BASE_STAT + this.permanentStatBoosts["FIRE"];
+        this.stats["WATER"] = BASE_STAT + this.permanentStatBoosts["WATER"];
+        this.mapPositionName = "HOME";
+        this.resetEntropy();
     }
 
 }
