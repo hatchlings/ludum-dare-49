@@ -3,7 +3,7 @@ import eventBus from '../util/eventbus';
 
 export class ShopItem {
 
-    constructor(scene, x, y, name, description, cost) {
+    constructor(scene, x, y, name, description, cost, upgrades) {
         this.scene = scene;
         this.x = x;
         this.y = y;
@@ -11,6 +11,10 @@ export class ShopItem {
         this.description = description;
         this.cost = cost;
         this.purchased = false;
+        
+        this.upgradeIndex = 0;
+        this.upgrades = upgrades;
+        
         this.purchasable = character.fortune >= cost;
 
         this.setupListeners();
@@ -31,11 +35,32 @@ export class ShopItem {
             if(this.purchasable && !this.purchased) {
                 this.purchased = true;
                 character.removeFortune(this.cost);
-                
-                this.buyEntity.setAlpha(0.5);
-                this.buyEntity.setColor("#00FF00");
 
                 eventBus.emit("game:itemPurchased", this.name);
+
+                if(this.upgrades && this.upgrades[this.upgradeIndex]) {
+                    this.purchased = false;
+                    const nextUpgrade = this.upgrades[this.upgradeIndex];
+
+                    this.upgradeIndex++;
+
+                    this.name = nextUpgrade.name;
+                    this.description = nextUpgrade.description;
+                    this.cost = nextUpgrade.cost;
+
+                    this.purchasable = character.fortune >= this.cost;
+
+                    this.nameEntity.text = this.name;
+                    this.descriptionEntity.text = this.description;
+                    this.buyEntity.text = `BUY FOR ${this.cost} FORTUNE`;
+
+                    if(!this.purchasable) {
+                        this.buyEntity.setAlpha(0.3);
+                    }
+                } else {
+                    this.buyEntity.setAlpha(0.5);
+                    this.buyEntity.setColor("#00FF00");
+                } 
             } else {
                 console.log("Nope!");
             }

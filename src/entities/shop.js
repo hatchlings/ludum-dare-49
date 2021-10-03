@@ -3,10 +3,22 @@ import eventBus from '../util/eventbus';
 import { ShopItem } from './shopitem';
 
 const SHOP_ITEMS = [
-    {name: "Improved Staff", description: "Your staff fails less", cost: 3},
-    {name: "Advanced Staff", description: "Your staff fails even less", cost: 5},
-    {name: "Shield", description: "Block Chaos hits", cost: 1},
-    {name: "Advanced Shield", description: "Block even more Chaos hits", cost: 5},
+    {
+        name: "Improved Staff", 
+        description: "Your staff fails less", 
+        cost: 3,
+        upgrades: [
+            {name: "Advanced Staff", description: "Your staff fails even less", cost: 5}
+        ]
+    },
+    {
+        name: "Shield",
+        description: "Block Chaos hits",
+        cost: 1,
+        upgrades: [
+            {name: "Advanced Shield", description: "Block even more Chaos hits", cost: 5}
+        ]
+    },
     {name: "Decrease Entropy", description: "Entropy pool is decreased by one", cost: 1}
 ]
 
@@ -49,7 +61,7 @@ export class Shop {
 
     showItems() {
         SHOP_ITEMS.forEach((item, index) => {
-            new ShopItem(this.scene, 20, 100 + (50 * index), item.name, item.description, item.cost);
+            new ShopItem(this.scene, 20, 100 + (50 * index), item.name, item.description, item.cost, item.upgrades);
         });
     }
 
