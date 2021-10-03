@@ -20,8 +20,8 @@ class Character {
         };
 
         this.deathCount = 0;
-        
-        this.entropyCapacity = 10;
+
+        this.entropyCapacity = 5;
         this.minimumEntropyCapacity = 3;
 
         this.fortune = 0;
@@ -98,7 +98,7 @@ class Character {
     setShieldDurability(amount) {
         this.shield += amount;
     }
-    
+
     reduceShieldDurability() {
         this.shield -= 1;
     }
