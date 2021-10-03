@@ -26,6 +26,7 @@ export function animationTimeout(ms, signal, callback) {
         const targetNext = start + roundedElapsed + ms;
         const delay = targetNext - performance.now();
         setTimeout(() => requestAnimationFrame(frame), delay);
+        //setTimeout((time) => frame.call(this), delay);
     }
     scheduleFrame(start);
     return prom;
@@ -48,6 +49,7 @@ export function animationInterval(ms, signal, callback) {
         const targetNext = start + roundedElapsed + ms;
         const delay = targetNext - performance.now();
         setTimeout(() => requestAnimationFrame(frame), delay);
+        //setTimeout((time) => frame.call(this), delay);
     }
 
     scheduleFrame(start);

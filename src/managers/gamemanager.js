@@ -4,10 +4,11 @@ import { animationTimeout } from '../util/timing';
 
 // Wait times for various Animations
 const APPLY_ENTROPY_WAIT = 500;
-const DEATH_WAIT = 100;
+const DEATH_WAIT = 1000;
 const RESET_ENTROPY_WAIT = 500;
 const APPLY_CHAOS_WAIT = 500;
 const ROLL_CHAOS_WAIT = 500;
+const APPLY_STAT_BONUS_WAIT = 500;
 
 class GameManager {
     constructor() {
@@ -74,7 +75,7 @@ class GameManager {
                         } else {
                             resolve();
                         }
-                    }, ROLL_CHAOS_WAIT + 500);
+                    }, ROLL_CHAOS_WAIT + 5);
                 });
             })
             .then(() => {
@@ -112,7 +113,7 @@ class GameManager {
         eventBus.emit('game:fortuneUpdated');
         console.log(`${type} increased by ${quantity}. ${type} is now ${character.stats[type]}.`);
 
-        return animationTimeout(2000, undefined, () => {});
+        return animationTimeout(APPLY_STAT_BONUS_WAIT, undefined, () => {});
     }
 
     applyEntropy() {
