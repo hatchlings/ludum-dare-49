@@ -8,7 +8,7 @@ const SHOP_ITEMS = [
         description: "Your staff fails less",
         cost: 3,
         upgrades: [
-            {name: "Advanced Staff", description: "Your staff fails even less", cost: 5}
+            {name: "Advanced Staff", description: "Your staff fails even less", cost: 5},
             {name: "Superior Staff", description: "Your staff never fails", cost: 8}
         ]
 
