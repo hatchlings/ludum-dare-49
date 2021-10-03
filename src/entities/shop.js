@@ -19,7 +19,17 @@ const SHOP_ITEMS = [
             {name: "Advanced Shield", description: "Block even more Chaos hits", cost: 5}
         ]
     },
-    {name: "Decrease Entropy", description: "Entropy pool is decreased by one", cost: 1}
+    {
+        name: "Decrease Entropy",
+        description: "Entropy pool is decreased by one",
+        cost: 1,
+        filter: {
+            f: () => {
+                return character.entropyCapacity <= character.minimumEntropyCapacity;
+            },
+            buyText: "UNAVAILABLE"
+        }
+    }
 ]
 
 export class Shop {
@@ -61,7 +71,7 @@ export class Shop {
 
     showItems() {
         SHOP_ITEMS.forEach((item, index) => {
-            new ShopItem(this.scene, 20, 100 + (50 * index), item.name, item.description, item.cost, item.upgrades);
+            new ShopItem(this.scene, 20, 100 + (50 * index), item.name, item.description, item.cost, item.upgrades, item.filter);
         });
     }
 

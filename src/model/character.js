@@ -21,7 +21,8 @@ class Character {
 
         this.deathCount = 0;
         
-        this.entropyCapacity = 5;
+        this.entropyCapacity = 10;
+        this.minimumEntropyCapacity = 3;
 
         this.fortune = 0;
 
@@ -60,16 +61,16 @@ class Character {
     }
 
     applyRndBane() {
-        this.entropyCapacity += Phaser.Math.RND.pick([-1, 1]);
+        this.entropyCapacity += Phaser.Math.RND.pick([1, 2, 3]);
     }
 
-    applyRndBoon() {
-        let stat = Phaser.Math.RND.pick(Object.keys(this.stats));
-        this.applyPermanentStatBoost(stat, Phaser.Math.RND.pick([1, 2]));
-    }
+    // applyRndBoon() {
+    //     let stat = Phaser.Math.RND.pick(Object.keys(this.stats));
+    //     this.applyPermanentStatBoost(stat, Phaser.Math.RND.pick([1, 2]));
+    // }
 
     randomBoonOrBane() {
-        let baneOrBoon = Phaser.Math.RND.pick([this.applyRndBane, this.applyRndBoon]);
+        let baneOrBoon = Phaser.Math.RND.pick([this.applyRndBane]);
         baneOrBoon.call(this);
         eventBus.emit('game:entropyUpdated');
     }

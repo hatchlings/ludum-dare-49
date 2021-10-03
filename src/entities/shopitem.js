@@ -3,7 +3,7 @@ import eventBus from '../util/eventbus';
 
 export class ShopItem {
 
-    constructor(scene, x, y, name, description, cost, upgrades) {
+    constructor(scene, x, y, name, description, cost, upgrades, filter) {
         this.scene = scene;
         this.x = x;
         this.y = y;
@@ -11,6 +11,7 @@ export class ShopItem {
         this.description = description;
         this.cost = cost;
         this.purchased = false;
+        this.filter = filter;
         
         this.upgradeIndex = 0;
         this.upgrades = upgrades;
@@ -26,12 +27,20 @@ export class ShopItem {
         this.descriptionEntity = this.scene.add.text(250, this.y, this.description);
         this.buyEntity = this.scene.add.text(600, this.y, `BUY FOR ${this.cost} FORTUNE`);
 
+        if(this.filter && this.filter.f()) {
+            this.purchasable = false;
+            this.buyEntity.text = this.filter.buyText;
+            this.buyEntity.setColor("#FF0000");
+            return;
+        }
+
         if(!this.purchasable) {
             this.buyEntity.setAlpha(0.3);
         }
 
         this.buyEntity.setInteractive();
         this.buyEntity.on("pointerup", () => {
+
             if(this.purchasable && !this.purchased) {
                 this.purchased = true;
                 character.removeFortune(this.cost);
