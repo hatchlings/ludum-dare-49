@@ -12,7 +12,7 @@ export class MainScene extends Scene {
 
   create() {
 
-    this.fortune = new Fortune(this, 360, 20);
+    this.fortune = new Fortune(this, 480, 20);
     this.entropy = new Entropy(this);
     this.shop = new Shop(this);
     this.toMap = new MapExplore(this);

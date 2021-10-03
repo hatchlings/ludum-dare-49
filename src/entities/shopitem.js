@@ -26,8 +26,8 @@ export class ShopItem {
 
     createItem() {
         this.nameEntity = this.scene.add.text(this.x, this.y, this.name, {fontFamily: "Amatic SC", fontSize: 22});
-        this.descriptionEntity = this.scene.add.text(275, this.y, this.description, {fontFamily: "Amatic SC", fontSize: 22});
-        this.buyEntity = this.scene.add.text(640, this.y, `BUY FOR ${this.cost} FORTUNE`, {fontFamily: "Amatic SC", fontSize: 22});
+        this.descriptionEntity = this.scene.add.text(400, this.y, this.description, {fontFamily: "Amatic SC", fontSize: 22});
+        this.buyEntity = this.scene.add.text(740, this.y, `BUY FOR ${this.cost} FORTUNE`, {fontFamily: "Amatic SC", fontSize: 22});
 
         if(this.filter && this.filter.f()) {
             this.purchasable = false;

@@ -4,8 +4,8 @@ import { MapScene } from "./scenes/MapScene";
 
 export const gameConfig = {
   type: Phaser.AUTO,
-  width: 800,
-  height: 600,
+  width: 1024,
+  height: 768,
   parent: "GameContainer",
   physics: {
     default: "arcade",

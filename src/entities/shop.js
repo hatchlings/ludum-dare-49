@@ -76,7 +76,7 @@ export class Shop {
 
     showItems() {
         SHOP_ITEMS.forEach((item, index) => {
-            new ShopItem(this.scene, 20, 100 + (50 * index), item.name, item.description, item.cost, item.upgrades, item.filter, item.quantity);
+            new ShopItem(this.scene, 150, 150 + (50 * index), item.name, item.description, item.cost, item.upgrades, item.filter, item.quantity);
         });
     }
 

@@ -6,7 +6,7 @@ export class MapExplore {
     }
 
     createIcon() {
-        this.icon = this.scene.add.text(325, 450, "GO TO MAP", {fontSize: 48, fontFamily: "Amatic SC"});
+        this.icon = this.scene.add.text(425, 450, "GO TO MAP", {fontSize: 48, fontFamily: "Amatic SC"});
         this.icon.setInteractive();
         this.icon.on('pointerup', () => {
             this.scene.goToMap();

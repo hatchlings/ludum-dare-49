@@ -8,10 +8,10 @@ import { Stats } from '../entities/stats';
 import gameManager from '../managers/gamemanager';
 
 const TRAVEL_POS = [
-    { x: 400, y: 100 },
-    { x: 700, y: 300 },
-    { x: 400, y: 450 },
-    { x: 100, y: 300 },
+    { x: 512, y: 100 },
+    { x: 824, y: 384 },
+    { x: 512, y: 618 },
+    { x: 200, y: 384 },
 ];
 
 const LOCATIONS = ['EARTH', 'AIR', 'FIRE', 'WATER'];
@@ -31,7 +31,7 @@ export class MapScene extends Scene {
         this.stats = new Stats(this);
         this.ressurections = new Ressurections(this);
         this.entropy = new Entropy(this);
-        this.fortune = new Fortune(this, 360, 20);
+        this.fortune = new Fortune(this, 480, 20);
 
         this.addTravelPoints();
         this.addCharacter();
@@ -42,11 +42,11 @@ export class MapScene extends Scene {
     }
 
     addCharacter() {
-        this.character = new MapCharacter(this, 400, 300);
+        this.character = new MapCharacter(this, 512, 384);
     }
 
     addTravelPoints() {
-        const home = new MapIcon(this, 400, 300, 'HOME', 0);
+        const home = new MapIcon(this, 512, 384, 'HOME', 0);
         this.travelPoints.push(home);
 
         LOCATIONS.forEach((location, index) => {
