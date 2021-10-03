@@ -23,7 +23,7 @@ class Character {
         
         this.entropyCapacity = 5;
 
-        this.fortune = 10;
+        this.fortune = 0;
 
         this.staffName = "Basic Staff";
         this.staffStats = [-1, -1, 0, 1];
