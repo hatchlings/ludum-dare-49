@@ -84,8 +84,14 @@ export class MapIcon {
     }
 
     addToScene() {
-        this.sprite = this.scene.add.sprite(this.x, this.y, `${this.type}-${this.state}`);
-        this.sprite.setScale(0.5);
+
+        if(this.type === "HOME") {
+            this.sprite = this.scene.add.sprite(this.x, this.y, "cat");
+            this.sprite.setScale(0.75);
+        } else {
+            this.sprite = this.scene.add.sprite(this.x, this.y, `${this.type}-${this.state}`);
+            this.sprite.setScale(0.5);
+        }
 
         if(this.type !== "HOME") {
             this.createOrbs();
