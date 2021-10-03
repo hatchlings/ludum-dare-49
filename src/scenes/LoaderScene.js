@@ -37,6 +37,9 @@ export class LoaderScene extends Scene {
     
     STAT_TYPES.forEach((type) => {
       for(let i = 1; i <= 5; i++) {
+        if(i <= 3) {
+          this.load.image(`${type}-ORB-${i}`, `/assets/final/${type}/${type}-ORB-${i}.png`);
+        }
         this.load.image(`${type}-${i}`, `/assets/final/${type}/${type}-${i}.png`);
       }
     });

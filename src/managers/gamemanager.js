@@ -3,12 +3,12 @@ import eventBus from '../util/eventbus';
 import { animationTimeout } from '../util/timing';
 
 // Wait times for various Animations
-const APPLY_ENTROPY_WAIT = 500;
+const APPLY_ENTROPY_WAIT = 1000;
 const DEATH_WAIT = 1000;
-const RESET_ENTROPY_WAIT = 500;
-const APPLY_CHAOS_WAIT = 500;
-const ROLL_CHAOS_WAIT = 500;
-const APPLY_STAT_BONUS_WAIT = 500;
+const RESET_ENTROPY_WAIT = 1000;
+const APPLY_CHAOS_WAIT = 1000;
+const ROLL_CHAOS_WAIT = 1000;
+const APPLY_STAT_BONUS_WAIT = 1000;
 
 class GameManager {
     constructor() {

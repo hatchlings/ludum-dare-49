@@ -3,11 +3,42 @@ import gameState from '../model/gamestate';
 import eventBus from '../util/eventbus';
 
 const CHARACTER_STAND_OFFSETS = {
-    "EARTH": {x: 60, y: 50},
+    "EARTH": {x: 60, y: 70},
     "WATER": {x: 100, y: 0},
     "AIR": {x: -100, y: 0},
     "FIRE": {x: -60, y: -50},
     "HOME": {x: 0, y: 0}
+}
+
+const ORB_OFFSETS = {
+    "EARTH": [
+        {x: 0, y: -20},
+        {x: 120, y: 0},
+        {x: 130, y: 40},
+        {x: 0, y: 100},
+        {x: -100, y: 20}
+    ],
+    "WATER": [
+        {x: -80, y: -30},
+        {x: -100, y: 10},
+        {x: -105, y: 55},
+        {x: 0, y: 100},
+        {x: 40, y: 80}
+    ],
+    "AIR": [
+        {x: 60, y: -30},
+        {x: 80, y: 10},
+        {x: 85, y: 55},
+        {x: 0, y: 100},
+        {x: 40, y: 110}
+    ],
+    "FIRE": [
+        {x: 60, y: -20},
+        {x: -10, y: 100},
+        {x: 70, y: 40},
+        {x: 50, y: 90},
+        {x: -50, y: 55}
+    ],
 }
 
 export class MapIcon {
@@ -40,7 +71,7 @@ export class MapIcon {
                 this.state = newState;
                 this.scene.tweens.add({
                     targets: this.sprite,
-                    duration: 500,
+                    duration: 250,
                     scale: 0,
                     yoyo: true,
                     ease: "Bounce.inOut",
@@ -56,6 +87,10 @@ export class MapIcon {
         this.sprite = this.scene.add.sprite(this.x, this.y, `${this.type}-${this.state}`);
         this.sprite.setScale(0.5);
 
+        if(this.type !== "HOME") {
+            this.createOrbs();
+        }
+
         this.sprite.setInteractive();
 
         this.sprite.on('pointerup', this.handleSelect.bind(this));
@@ -69,6 +104,47 @@ export class MapIcon {
             ease: "Sine.easeInOut",
             yoyo: true,
             repeat: -1
+        });
+
+    }
+
+    createOrbs() {
+        this.orbPool = [];
+
+        const locs = ORB_OFFSETS[this.type];
+
+        locs.forEach((loc, index) => {
+
+            let orbState = 1;
+
+            if(index === 0) {
+                orbState = 3;
+            }
+            
+
+            const orb = this.scene.add.sprite(
+                this.sprite.x + loc.x,
+                this.sprite.y + loc.y,
+                `${this.type}-ORB-${orbState}`
+            );
+
+            this.scene.tweens.add({
+                targets: orb,
+                y: Phaser.Math.RND.pick(["-=2", "+=2", "-=3", "+=3"]),
+                yoyo: true,
+                duration: Phaser.Math.RND.pick([1500, 2000, 2500]),
+                repeat: -1,
+                ease: "Sine.easeInOut"
+            });
+
+            this.scene.tweens.add({
+                targets: orb,
+                angle: 360,
+                duration: 20000,
+                repeat: -1
+            });
+
+            this.orbPool.push(orb);
         });
 
     }
@@ -105,16 +181,86 @@ export class MapIcon {
         const stat = character.stats[this.type];
         let newState = this.state;
 
-        if(stat <= 2) {
+        if(stat < 4) {
             newState = 1;
-        } else if(stat <= 4) {
+        } else if(stat >= 4 && stat < 6) {
             newState = 2;
-        } else if(stat <= 6) {
+        } else if(stat >= 6 && stat < 8) {
             newState = 3;
-        } else if(stat < 10) {
+        } else if(stat >= 8 && stat < 10) {
             newState = 4;
         } else if(stat >= 10) {
             newState = 5;
+        }
+
+        const orbA = this.orbPool[0];
+        const orbB = this.orbPool[1];
+        const orbC = this.orbPool[2];
+        const orbD = this.orbPool[3];
+        const orbE = this.orbPool[4];
+
+        if(stat === 0) {
+            this.orbPool.forEach((orb) => {
+                orb.setTexture(`${this.type}-ORB-1`);
+            });
+        } else if(stat === 1) {
+            orbA.setTexture(`${this.type}-ORB-2`)
+            orbB.setTexture(`${this.type}-ORB-1`)
+            orbC.setTexture(`${this.type}-ORB-1`)
+            orbD.setTexture(`${this.type}-ORB-1`)
+            orbE.setTexture(`${this.type}-ORB-1`)
+        } else if(stat === 2) {
+            orbA.setTexture(`${this.type}-ORB-3`)
+            orbB.setTexture(`${this.type}-ORB-1`)
+            orbC.setTexture(`${this.type}-ORB-1`)
+            orbD.setTexture(`${this.type}-ORB-1`)
+            orbE.setTexture(`${this.type}-ORB-1`)
+        } else if(stat === 3) {
+            orbA.setTexture(`${this.type}-ORB-3`)
+            orbB.setTexture(`${this.type}-ORB-2`)
+            orbC.setTexture(`${this.type}-ORB-1`)
+            orbD.setTexture(`${this.type}-ORB-1`)
+            orbE.setTexture(`${this.type}-ORB-1`)
+        } else if(stat === 4) {
+            orbA.setTexture(`${this.type}-ORB-3`)
+            orbB.setTexture(`${this.type}-ORB-3`)
+            orbC.setTexture(`${this.type}-ORB-1`)
+            orbD.setTexture(`${this.type}-ORB-1`)
+            orbE.setTexture(`${this.type}-ORB-1`)
+        } else if(stat === 5) {
+            orbA.setTexture(`${this.type}-ORB-3`)
+            orbB.setTexture(`${this.type}-ORB-3`)
+            orbC.setTexture(`${this.type}-ORB-2`)
+            orbD.setTexture(`${this.type}-ORB-1`)
+            orbE.setTexture(`${this.type}-ORB-1`)
+        } else if(stat === 6) {
+            orbA.setTexture(`${this.type}-ORB-3`)
+            orbB.setTexture(`${this.type}-ORB-3`)
+            orbC.setTexture(`${this.type}-ORB-3`)
+            orbD.setTexture(`${this.type}-ORB-1`)
+            orbE.setTexture(`${this.type}-ORB-1`)
+        } else if(stat === 7) {
+            orbA.setTexture(`${this.type}-ORB-3`)
+            orbB.setTexture(`${this.type}-ORB-3`)
+            orbC.setTexture(`${this.type}-ORB-3`)
+            orbD.setTexture(`${this.type}-ORB-2`)
+            orbE.setTexture(`${this.type}-ORB-1`)
+        } else if(stat === 8) {
+            orbA.setTexture(`${this.type}-ORB-3`)
+            orbB.setTexture(`${this.type}-ORB-3`)
+            orbC.setTexture(`${this.type}-ORB-3`)
+            orbD.setTexture(`${this.type}-ORB-3`)
+            orbE.setTexture(`${this.type}-ORB-1`)
+        } else if(stat === 9) {
+            orbA.setTexture(`${this.type}-ORB-3`)
+            orbB.setTexture(`${this.type}-ORB-3`)
+            orbC.setTexture(`${this.type}-ORB-3`)
+            orbD.setTexture(`${this.type}-ORB-3`)
+            orbE.setTexture(`${this.type}-ORB-2`)
+        } else if(stat === 10) {
+            this.orbPool.forEach((orb) => {
+                orb.setTexture(`${this.type}-ORB-3`);
+            });
         }
 
         return newState;
