@@ -9,10 +9,10 @@ import { Stats } from '../entities/stats';
 import gameManager from '../managers/gamemanager';
 
 const TRAVEL_POS = [
-    { x: 512, y: 100 },
-    { x: 824, y: 384 },
+    { x: 512, y: 90 },
+    { x: 874, y: 384 },
     { x: 512, y: 618 },
-    { x: 200, y: 384 },
+    { x: 150, y: 394 },
 ];
 
 const LOCATIONS = ['EARTH', 'AIR', 'FIRE', 'WATER'];
@@ -32,7 +32,7 @@ export class MapScene extends Scene {
         this.stats = new Stats(this);
         this.ressurections = new Ressurections(this);
         this.entropy = new Entropy(this);
-        this.fortune = new Fortune(this, 480, 20);
+        this.fortune = new Fortune(this, 870, 10);
         this.shardRing = new ShardRing(this)
 
         this.addTravelPoints();

@@ -169,8 +169,8 @@ export class MapIcon {
 
     handleSelect() {
         if(!gameState.blockingMapInput && character.mapPosition !== this.mapPosition) {
-            this.sprite.scale -= 0.05;
             eventBus.emit("game:blockInput");
+            this.sprite.scale -= 0.05;
             eventBus.emit(
                 "game:positionChanged",
                 this.mapPosition,
