@@ -8,7 +8,7 @@ const SHOP_ITEMS = [
         description: "Your staff fails less",
         cost: 3,
         upgrades: [
-            {name: "Advanced Staff", description: "Your staff fails even less", cost: 5}
+            {name: "Advanced Staff", description: "Your staff fails even less", cost: 5},
             {name: "Superior Staff", description: "Your staff never fails", cost: 8}
         ]
 
@@ -25,6 +25,7 @@ const SHOP_ITEMS = [
         name: "Decrease Entropy",
         description: "Entropy pool is decreased by one",
         cost: 1,
+        quantity: "UNLIMITED",
         filter: {
             f: () => {
                 return character.entropyCapacity <= character.minimumEntropyCapacity;
@@ -76,7 +77,7 @@ export class Shop {
 
     showItems() {
         SHOP_ITEMS.forEach((item, index) => {
-            new ShopItem(this.scene, 20, 100 + (50 * index), item.name, item.description, item.cost, item.upgrades, item.filter);
+            new ShopItem(this.scene, 20, 100 + (50 * index), item.name, item.description, item.cost, item.upgrades, item.filter, item.quantity);
         });
     }
 

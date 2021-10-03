@@ -3,7 +3,7 @@ import eventBus from '../util/eventbus';
 
 export class ShopItem {
 
-    constructor(scene, x, y, name, description, cost, upgrades, filter) {
+    constructor(scene, x, y, name, description, cost, upgrades, filter, quantity) {
         this.scene = scene;
         this.x = x;
         this.y = y;
@@ -12,6 +12,8 @@ export class ShopItem {
         this.cost = cost;
         this.purchased = false;
         this.filter = filter;
+
+        this.quantity = quantity;
         
         this.upgradeIndex = 0;
         this.upgrades = upgrades;
@@ -41,11 +43,32 @@ export class ShopItem {
         this.buyEntity.setInteractive();
         this.buyEntity.on("pointerup", () => {
 
+            if(this.quantity && this.quantity === "UNLIMITED") {
+                this.purchased = false;
+                this.purchasable = character.fortune >= this.cost;
+
+                if(this.filter && this.filter.f()) {
+                    this.purchasable = false;
+                    this.buyEntity.text = this.filter.buyText;
+                    this.buyEntity.setColor("#FF0000");
+                    return;
+                }
+            }
+            
             if(this.purchasable && !this.purchased) {
-                this.purchased = true;
+                        
                 character.removeFortune(this.cost);
 
                 eventBus.emit("game:itemPurchased", this.name);
+
+                this.purchased = true;
+
+                if(this.filter && this.filter.f()) {
+                    this.purchasable = false;
+                    this.buyEntity.text = this.filter.buyText;
+                    this.buyEntity.setColor("#FF0000");
+                    return;
+                }
 
                 if(this.upgrades && this.upgrades[this.upgradeIndex]) {
                     this.purchased = false;
@@ -67,8 +90,10 @@ export class ShopItem {
                         this.buyEntity.setAlpha(0.3);
                     }
                 } else {
-                    this.buyEntity.setAlpha(0.5);
-                    this.buyEntity.setColor("#00FF00");
+                    if(!this.quantity) {
+                        this.buyEntity.setAlpha(0.5);
+                        this.buyEntity.setColor("#00FF00");
+                    }
                 } 
             } else {
                 console.log("Nope!");
