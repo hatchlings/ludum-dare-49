@@ -31,6 +31,9 @@ export class LoaderScene extends Scene {
 
     this.load.image("background", "/assets/final/background.png");
     this.load.image("character", "/assets/final/character.png");
+    this.load.image("cat", "/assets/final/chaoscat.png");
+    this.load.image("orb", "/assets/final/orb.png");
+    this.load.image("shard", "/assets/final/shard.png");
     
     STAT_TYPES.forEach((type) => {
       for(let i = 1; i <= 5; i++) {
