@@ -1,5 +1,13 @@
 import character, { STAT_TYPES } from '../model/character';
 import eventBus from '../util/eventbus';
+import { animationTimeout } from '../util/timing';
+
+// Wait times for various Animations
+const APPLY_ENTROPY_WAIT = 1000;
+const DEATH_WAIT = 2000;
+const RESET_ENTROPY_WAIT = 1000;
+const APPLY_CHAOS_WAIT = 1000;
+const ROLL_CHAOS_WAIT = 1000;
 
 class GameManager {
     constructor() {
@@ -22,41 +30,69 @@ class GameManager {
         );
     }
 
-    processTurn() {
-        console.log(
-            `STATS: Earth: ${character.stats['EARTH']} Air: ${character.stats['AIR']} FIRE: ${character.stats['FIRE']} Water: ${character.stats['WATER']}`
-        );
-
-        if (character.mapPositionName === 'HOME') {
+    runHomeActions() {
+        animationTimeout(APPLY_ENTROPY_WAIT, undefined, () => {
             this.applyEntropy();
-            if (this.isDead()) {
-                console.log('Oops, you died!');
-                character.randomBoonOrBane();
-                this.handleDeath();
-            } else {
-                character.resetCurrentEntropy();
-                eventBus.emit('game:enableInput');
-            }
-        } else {
-            this.applyStatBonus();
-            if(character.entropy === character.entropyCapacity) {
-                this.applyChaos()
-            } else {
-                this.rollForChaos();
-            }
-            if (this.isDead()) {
-                console.log('Oops, you died!');
-                character.randomBoonOrBane();
-                this.handleDeath();
-            } else {
+        })
+            .then(() => {
+                if (this.isDead()) {
+                    return animationTimeout(DEATH_WAIT, undefined, () => {
+                        this.handleDeath();
+                    }).then(() => {
+                        return false;
+                    });
+                }
+                return true;
+            })
+            .then((isAlive) => {
+                if (isAlive) {
+                    return animationTimeout(RESET_ENTROPY_WAIT, undefined, () => {
+                        character.resetCurrentEntropy();
+                    }).then(() => {
+                        eventBus.emit('game:enableInput');
+                    });
+                }
+            });
+    }
+
+    runTravelActions() {
+        this.applyStatBonus()
+            .then(() => {
+                if (character.entropy === character.entropyCapacity) {
+                    return this.applyChaos();
+                } else {
+                    return this.rollForChaos();
+                }
+            })
+            .then(() => {
+                if (this.isDead()) {
+                    return animationTimeout(DEATH_WAIT, undefined, () => {
+                        this.handleDeath();
+                    }).then(() => {
+                        return false;
+                    });
+                }
+                return true;
+            })
+            .then((isAlive) => {
                 if (character.entropy >= 6) {
                     console.log('Maxed out entropy, forcing home.');
                     this.forceHome();
                 } else {
                     eventBus.emit('game:enableInput');
                 }
-            }
+            });
+    }
+
+    processTurn() {
+        console.log(
+            `STATS: Earth: ${character.stats['EARTH']} Air: ${character.stats['AIR']} FIRE: ${character.stats['FIRE']} Water: ${character.stats['WATER']}`
+        );
+        if (character.mapPositionName === 'HOME') {
+            this.runHomeActions();
+            return;
         }
+        this.runTravelActions();
     }
 
     applyStatBonus() {
@@ -64,19 +100,21 @@ class GameManager {
         const extra = Phaser.Math.RND.pick(character.staffStats);
         const quantity = 1 + extra;
 
-        if(quantity <= 0) {
+        if (quantity <= 0) {
             console.log(`${character.staffName} failed! Stats: ${character.staffStats}.`);
         } else {
             const fortuneRoll = Phaser.Math.RND.between(1, 2);
-            if(fortuneRoll === 1) {
+            if (fortuneRoll === 1) {
                 character.addFortune();
-            } 
+            }
         }
-        
+
         character.applyStat(type, quantity);
-        
+
         eventBus.emit('game:fortuneUpdated');
         console.log(`${type} increased by ${quantity}. ${type} is now ${character.stats[type]}.`);
+
+        return animationTimeout(2000, undefined, () => {});
     }
 
     applyEntropy() {
@@ -93,32 +131,38 @@ class GameManager {
     }
 
     rollForChaos() {
-        const roll = Phaser.Math.RND.between(1, 10);
-        if (roll <= character.entropy) {
-            console.log(`Chaos HIT. Rolled ${roll}, entropy was ${character.entropy}.`);
-            this.applyChaos();
-        } else {
-            console.log(`Chaos MISSED. Rolled ${roll}, entropy was ${character.entropy}.`);
-        }
+        return animationTimeout(ROLL_CHAOS_WAIT, undefined, () => {
+            const roll = Phaser.Math.RND.between(1, 10);
+            if (roll <= character.entropy) {
+                console.log(`Chaos HIT. Rolled ${roll}, entropy was ${character.entropy}.`);
+                this.applyChaos();
+            } else {
+                console.log(`Chaos MISSED. Rolled ${roll}, entropy was ${character.entropy}.`);
+            }
+        });
     }
 
     applyChaos() {
-        for (let i = 0; i < character.entropyCapacity; i++) {
-            const roll = Phaser.Math.RND.between(1, 6);
-            if (roll < 5) {
-                const type = STAT_TYPES[roll - 1];
-                if(character.shield > 0) {
-                    character.reduceShieldDurability();
-                    console.log(`Shield blocked Chaos hit to ${type}! Remaining shield: ${character.shield}`);
+        return animationTimeout(APPLY_CHAOS_WAIT, undefined, () => {
+            for (let i = 0; i < character.entropyCapacity; i++) {
+                const roll = Phaser.Math.RND.between(1, 6);
+                if (roll < 5) {
+                    const type = STAT_TYPES[roll - 1];
+                    if (character.shield > 0) {
+                        character.reduceShieldDurability();
+                        console.log(
+                            `Shield blocked Chaos hit to ${type}! Remaining shield: ${character.shield}`
+                        );
+                    } else {
+                        character.applyStat(type, -1);
+                        console.log(`Chaos rolled: ${roll}. -1 ${type}.`);
+                    }
                 } else {
-                    character.applyStat(type, -1);
-                    console.log(`Chaos rolled: ${roll}. -1 ${type}.`);
+                    console.log(`Chaos rolled: ${roll}. No stat deducted.`);
                 }
-            } else {
-                console.log(`Chaos rolled: ${roll}. No stat deducted.`);
             }
-        }
-        character.resetCurrentEntropy();
+            character.resetCurrentEntropy();
+        });
     }
 
     isDead() {
@@ -131,11 +175,14 @@ class GameManager {
     }
 
     handleDeath() {
-        setTimeout(() => {
+        console.log('Oops, you died!');
+        character.randomBoonOrBane();
+
+        animationTimeout(2000, undefined, () => {
             character.resetForRound();
             this.mapScene.returnHome();
             eventBus.emit('game:enableInput');
-        }, 2000);
+        });
     }
 
     forceHome() {
