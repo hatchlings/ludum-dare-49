@@ -4,12 +4,14 @@ import { ShopItem } from './shopitem';
 
 const SHOP_ITEMS = [
     {
-        name: "Improved Staff", 
-        description: "Your staff fails less", 
+        name: "Improved Staff",
+        description: "Your staff fails less",
         cost: 3,
         upgrades: [
             {name: "Advanced Staff", description: "Your staff fails even less", cost: 5}
+            {name: "Superior Staff", description: "Your staff never fails", cost: 8}
         ]
+
     },
     {
         name: "Shield",
@@ -56,7 +58,10 @@ export class Shop {
                 character.setStaffStats([-1, 0, 0, 1], name);
                 break;
             case "Advanced Staff":
-                character.setStaffStats([-1, 0, 0, 0, 1], name);
+                character.setStaffStats([-1, 0, 1, 2], name);
+                break;
+            case "Superior Staff":
+                character.setStaffStats([0,0,1,1,2,3,4], name);
                 break;
             case "Shield":
                 character.setShieldDurability(1);
