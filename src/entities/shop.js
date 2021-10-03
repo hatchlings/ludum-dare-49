@@ -23,6 +23,7 @@ const SHOP_ITEMS = [
         name: "Decrease Entropy",
         description: "Entropy pool is decreased by one",
         cost: 1,
+        quantity: "UNLIMITED",
         filter: {
             f: () => {
                 return character.entropyCapacity <= character.minimumEntropyCapacity;
@@ -71,7 +72,7 @@ export class Shop {
 
     showItems() {
         SHOP_ITEMS.forEach((item, index) => {
-            new ShopItem(this.scene, 20, 100 + (50 * index), item.name, item.description, item.cost, item.upgrades, item.filter);
+            new ShopItem(this.scene, 20, 100 + (50 * index), item.name, item.description, item.cost, item.upgrades, item.filter, item.quantity);
         });
     }
 

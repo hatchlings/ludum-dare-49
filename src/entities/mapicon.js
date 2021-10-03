@@ -10,7 +10,9 @@ export class MapIcon {
         this.y = y;
         this.type = type;
         this.mapPosition = mapPosition;
+        this.state = 1;
 
+        
         this.addToScene();
     }
 
@@ -34,6 +36,10 @@ export class MapIcon {
                 this.type
             );
         }
+    }
+
+    calculateState() {
+
     }
 
 }
