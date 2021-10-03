@@ -105,6 +105,7 @@ class Character {
 
     updateEntropyPool(amount) {
         this.entropyCapacity += amount;
+        eventBus.emit('game:entropyUpdated');
     }
 
     resetForRound() {
