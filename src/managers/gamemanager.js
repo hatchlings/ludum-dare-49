@@ -67,14 +67,14 @@ class GameManager {
         if(quantity <= 0) {
             console.log(`${character.staffName} failed! Stats: ${character.staffStats}.`);
         } else {
-            const fortuneRoll = Phaser.Math.RND.between(1, 2);
-            if(fortuneRoll === 1) {
+            const fortuneRoll = Phaser.Math.RND.between(1, 3);
+            if(fortuneRoll <= 2) {
                 character.addFortune();
-            } 
+            }
         }
-        
+
         character.applyStat(type, quantity);
-        
+
         eventBus.emit('game:fortuneUpdated');
         console.log(`${type} increased by ${quantity}. ${type} is now ${character.stats[type]}.`);
     }
