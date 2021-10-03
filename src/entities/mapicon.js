@@ -57,7 +57,10 @@ export class MapIcon {
         this.sprite.setScale(0.5);
 
         this.sprite.setInteractive();
+
         this.sprite.on('pointerup', this.handleSelect.bind(this));
+        this.sprite.on('pointerover', this.hoverOver.bind(this));
+        this.sprite.on('pointerout', this.hoverOff.bind(this));
 
         this.scene.tweens.add({
             targets: this.sprite,
@@ -70,8 +73,21 @@ export class MapIcon {
 
     }
 
+    hoverOver() {
+        if(!gameState.blockingMapInput && character.mapPosition !== this.mapPosition) {
+            this.sprite.scale += 0.05;
+        }
+    }
+
+    hoverOff() {
+        if(!gameState.blockingMapInput && character.mapPosition !== this.mapPosition) {
+            this.sprite.scale -= 0.05;
+        }
+    }
+
     handleSelect() {
         if(!gameState.blockingMapInput && character.mapPosition !== this.mapPosition) {
+            this.sprite.scale -= 0.05;
             eventBus.emit("game:blockInput");
             eventBus.emit(
                 "game:positionChanged",
