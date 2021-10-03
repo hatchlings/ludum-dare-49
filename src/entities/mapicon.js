@@ -95,7 +95,7 @@ export class MapIcon {
             newState = 2;
         } else if(stat <= 6) {
             newState = 3;
-        } else if(stat <= 8) {
+        } else if(stat < 10) {
             newState = 4;
         } else if(stat >= 10) {
             newState = 5;
