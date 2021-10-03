@@ -35,7 +35,7 @@ class GameManager {
             this.applyEntropy();
         })
             .then(() => {
-                if (this.isDead()) {
+                if (character.isDead) {
                     return this.handleDeath().then(() => {
                         return false;
                     });
@@ -64,16 +64,15 @@ class GameManager {
                 }
             })
             .then(() => {
-                
                 /* This is firing off BEFORE rollForChaos is complete */
                 /* Hacked in this temp solution. */
 
                 return new Promise((resolve) => {
                     setTimeout(() => {
-                        if (this.isDead()) {
+                        if (character.isDead) {
                             resolve(this.handleDeath());
                         } else {
-                            resolve()
+                            resolve();
                         }
                     }, ROLL_CHAOS_WAIT + 500);
                 });
@@ -164,18 +163,9 @@ class GameManager {
         });
     }
 
-    isDead() {
-        return (
-            character.stats['AIR'] <= 0 ||
-            character.stats['EARTH'] <= 0 ||
-            character.stats['FIRE'] <= 0 ||
-            character.stats['WATER'] <= 0
-        );
-    }
-
     handleDeath() {
         console.log('Oops, you died!');
-        character.randomBoonOrBane();
+        character.applyRndBane();
 
         return animationTimeout(DEATH_WAIT, undefined, () => {
             character.resetForRound();

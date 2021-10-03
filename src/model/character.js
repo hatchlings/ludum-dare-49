@@ -26,7 +26,7 @@ class Character {
 
         this.fortune = 0;
 
-        this.staffName = "Basic Staff";
+        this.staffName = 'Basic Staff';
         this.staffStats = [-1, -1, 0, 1];
 
         this.shield = 0;
@@ -34,6 +34,10 @@ class Character {
         this.entropy = 0;
         this.mapPosition = 0;
         this.mapPositionName = 'HOME';
+    }
+
+    get isDead() {
+        return Object.values(this.stats).some((val) => val <= 0);
     }
 
     applyPositionChange(pos, _data, name) {
@@ -52,7 +56,7 @@ class Character {
     }
 
     applyStat(stat, quantity) {
-        this.stats[stat] += quantity;
+        this.stats[stat] = Phaser.Math.Clamp(this.stats[stat] + quantity, 0, 10);
         eventBus.emit('game:statsUpdated');
     }
 
@@ -60,18 +64,13 @@ class Character {
         this.permanentStatBoosts[stat] += quantity;
     }
 
-    applyRndBane() {
-        this.entropyCapacity += Phaser.Math.RND.pick([0, 0, 1, 2, 3]);
-    }
-
     // applyRndBoon() {
     //     let stat = Phaser.Math.RND.pick(Object.keys(this.stats));
     //     this.applyPermanentStatBoost(stat, Phaser.Math.RND.pick([1, 2]));
     // }
 
-    randomBoonOrBane() {
-        let baneOrBoon = Phaser.Math.RND.pick([this.applyRndBane]);
-        baneOrBoon.call(this);
+    applyRndBane() {
+        this.entropyCapacity += Phaser.Math.RND.pick([0, 0, 1, 2, 3]);
         eventBus.emit('game:entropyUpdated');
     }
 
@@ -119,7 +118,7 @@ class Character {
         this.mapPosition = 0;
         this.mapPositionName = 'HOME';
 
-        this.staffName = "Basic Staff";
+        this.staffName = 'Basic Staff';
         this.staffStats = [-1, -1, 0, 1];
 
         this.shield = 0;
