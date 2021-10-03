@@ -67,6 +67,11 @@ export class MapScene extends Scene {
         this.ressurections.cleanup();
         this.entropy.cleanup();
         this.fortune.cleanup();
+
+        this.travelPoints.forEach((tp) => {
+            tp.cleanup();
+        });
+
         this.scene.start('MainScene');
     }
 }

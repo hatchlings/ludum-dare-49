@@ -36,9 +36,7 @@ class GameManager {
         })
             .then(() => {
                 if (this.isDead()) {
-                    return animationTimeout(DEATH_WAIT, undefined, () => {
-                        this.handleDeath();
-                    }).then(() => {
+                    return this.handleDeath().then(() => {
                         return false;
                     });
                 }
@@ -48,10 +46,11 @@ class GameManager {
                 if (isAlive) {
                     return animationTimeout(RESET_ENTROPY_WAIT, undefined, () => {
                         character.resetCurrentEntropy();
-                    }).then(() => {
-                        eventBus.emit('game:enableInput');
                     });
                 }
+            })
+            .then(() => {
+                eventBus.emit('game:enableInput');
             });
     }
 
@@ -66,9 +65,7 @@ class GameManager {
             })
             .then(() => {
                 if (this.isDead()) {
-                    return animationTimeout(DEATH_WAIT, undefined, () => {
-                        this.handleDeath();
-                    }).then(() => {
+                    return this.handleDeath().then(() => {
                         return false;
                     });
                 }
@@ -178,7 +175,7 @@ class GameManager {
         console.log('Oops, you died!');
         character.randomBoonOrBane();
 
-        animationTimeout(2000, undefined, () => {
+        return animationTimeout(DEATH_WAIT, undefined, () => {
             character.resetForRound();
             this.mapScene.returnHome();
             eventBus.emit('game:enableInput');
