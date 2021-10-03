@@ -21,11 +21,18 @@ export class MapCharacter {
     }
 
     addToScene() {
-        this.sprite = this.scene.add.sprite(this.x, this.y, "pet");
-        this.sprite.setScale(0.5);
+        this.sprite = this.scene.add.sprite(this.x, this.y, "character");
+        this.sprite.setScale(0.33);
     }
 
     moveTo(x, y) {
+        
+        if(this.sprite.x < x) {
+            this.sprite.flipX = false;
+        } else if(this.sprite.x > x) {
+            this.sprite.flipX = true;
+        }
+
         this.scene.tweens.add({
             targets: this.sprite,
             duration: 1000,

@@ -2,6 +2,14 @@ import character from '../model/character';
 import gameState from '../model/gamestate';
 import eventBus from '../util/eventbus';
 
+const CHARACTER_STAND_OFFSETS = {
+    "EARTH": {x: 60, y: 50},
+    "WATER": {x: 100, y: 0},
+    "AIR": {x: -100, y: 0},
+    "FIRE": {x: -60, y: -50},
+    "HOME": {x: 0, y: 0}
+}
+
 export class MapIcon {
 
     constructor(scene, x, y, type, mapPosition) {
@@ -30,7 +38,16 @@ export class MapIcon {
             const newState = this.calculateState();
             if(newState !== this.state) {
                 this.state = newState;
-                this.sprite.setTexture(`${this.type}-${this.state}`);
+                this.scene.tweens.add({
+                    targets: this.sprite,
+                    duration: 500,
+                    scale: 0,
+                    yoyo: true,
+                    ease: "Bounce.inOut",
+                    onYoyo: () => {
+                        this.sprite.setTexture(`${this.type}-${this.state}`);
+                    }
+                });
             }
         }
     }
@@ -42,7 +59,15 @@ export class MapIcon {
         this.sprite.setInteractive();
         this.sprite.on('pointerup', this.handleSelect.bind(this));
 
-        this.scene.add.text(this.x - 20, this.y, this.type);
+        this.scene.tweens.add({
+            targets: this.sprite,
+            y: "-=3",
+            duration: 1000,
+            ease: "Sine.easeInOut",
+            yoyo: true,
+            repeat: -1
+        });
+
     }
 
     handleSelect() {
@@ -51,7 +76,10 @@ export class MapIcon {
             eventBus.emit(
                 "game:positionChanged",
                 this.mapPosition,
-                { x: this.x, y: this.y },
+                {
+                    x: this.x + CHARACTER_STAND_OFFSETS[this.type].x, 
+                    y: this.y + CHARACTER_STAND_OFFSETS[this.type].y  
+                },
                 this.type
             );
         }

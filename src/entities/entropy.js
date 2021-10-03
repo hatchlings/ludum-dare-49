@@ -19,7 +19,7 @@ export class Entropy {
     }
 
     createEntropy() {
-        this.entropy = this.scene.add.text(650, 50, `Entropy: ${character.entropy}/${character.entropyCapacity}`);
+        this.entropy = this.scene.add.text(650, 50, `Entropy: ${character.entropy}/${character.entropyCapacity}`, {fontFamily: "Amatic SC", fontSize: 28, stroke: "#000", strokeThickness: 6});
     }
 
     updateEntropy() {

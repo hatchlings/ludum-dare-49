@@ -10,7 +10,7 @@ import gameManager from '../managers/gamemanager';
 const TRAVEL_POS = [
     { x: 400, y: 100 },
     { x: 700, y: 300 },
-    { x: 400, y: 500 },
+    { x: 400, y: 450 },
     { x: 100, y: 300 },
 ];
 

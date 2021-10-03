@@ -21,7 +21,7 @@ export class Fortune {
     }
 
     createFortune() {
-        this.fortune = this.scene.add.text(this.x, this.y, `Fortune: ${character.fortune}`);
+        this.fortune = this.scene.add.text(this.x, this.y, `Fortune: ${character.fortune}`, {fontFamily: "Amatic SC", fontSize: 32, stroke: "#000", strokeThickness: 6});
     }
 
     updateFortune() {

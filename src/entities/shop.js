@@ -11,7 +11,6 @@ const SHOP_ITEMS = [
             {name: "Advanced Staff", description: "Your staff fails even less", cost: 5},
             {name: "Superior Staff", description: "Your staff never fails", cost: 8}
         ]
-
     },
     {
         name: "Shield",
@@ -33,7 +32,7 @@ const SHOP_ITEMS = [
             buyText: "UNAVAILABLE"
         }
     }
-]
+];
 
 export class Shop {
 
@@ -70,7 +69,7 @@ export class Shop {
                 character.setShieldDurability(5);
                 break;
             case "Decrease Entropy":
-                character.updateEntropyPool(-1)
+                character.updateEntropyPool(-1);
                 break;
         }
     }

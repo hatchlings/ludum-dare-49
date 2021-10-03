@@ -19,17 +19,17 @@ export class Stats {
     }
 
     createStats() {
-        this.earth = this.scene.add.text(20, 50, `Earth: ${character.stats.EARTH}`);
-        this.air = this.scene.add.text(20, 80, `Air: ${character.stats.AIR}`);
-        this.fire = this.scene.add.text(20, 110, `Fire: ${character.stats.FIRE}`);
-        this.water = this.scene.add.text(20, 140, `Water: ${character.stats.WATER}`);
+        this.earth = this.scene.add.text(20, 50, `Earth: ${character.stats.EARTH}/10`, {fontFamily: "Amatic SC", fontSize: 24, stroke: "#000", strokeThickness: 6});
+        this.air = this.scene.add.text(20, 90, `Air: ${character.stats.AIR}/10`, {fontFamily: "Amatic SC", fontSize: 24, stroke: "#000", strokeThickness: 6});
+        this.fire = this.scene.add.text(20, 130, `Fire: ${character.stats.FIRE}/10`, {fontFamily: "Amatic SC", fontSize: 24, stroke: "#000", strokeThickness: 6});
+        this.water = this.scene.add.text(20, 170, `Water: ${character.stats.WATER}/10`, {fontFamily: "Amatic SC", fontSize: 24, stroke: "#000", strokeThickness: 6});
     }
 
     updateStats() {
-        this.earth.text = `Earth: ${character.stats.EARTH}`;
-        this.air.text = `Air: ${character.stats.AIR}`;
-        this.fire.text = `Fire: ${character.stats.FIRE}`;
-        this.water.text =`Water: ${character.stats.WATER}`;
+        this.earth.text = `Earth: ${character.stats.EARTH}/10`;
+        this.air.text = `Air: ${character.stats.AIR}/10`;
+        this.fire.text = `Fire: ${character.stats.FIRE}/10`;
+        this.water.text =`Water: ${character.stats.WATER}/10`;
     }
 
     cleanup() {

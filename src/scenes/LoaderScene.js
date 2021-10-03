@@ -1,5 +1,7 @@
 import { Scene } from "phaser";
 /* Force the singleton to instantiate, weird parcel behavior */
+import audioManager from '../managers/audiomanager';
+/* Force the singleton to instantiate, weird parcel behavior */
 import gameManager from '../managers/gamemanager';
 /* Force the singleton to instantiate, weird parcel behavior */
 import character, { STAT_TYPES } from '../model/character';
@@ -19,12 +21,16 @@ export class LoaderScene extends Scene {
     /* MOCK */
 
     this.load.image("darkblue", "/assets/darkblue.png");
-    this.load.image("background", "/assets/grass.png");
+    this.load.image("grass", "/assets/grass.png");
     this.load.image("pet", "/assets/pet.png");
 
     /* REAL */
 
-    console.log(STAT_TYPES);
+    this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
+
+
+    this.load.image("background", "/assets/final/background.png");
+    this.load.image("character", "/assets/final/character.png");
     
     STAT_TYPES.forEach((type) => {
       for(let i = 1; i <= 5; i++) {
@@ -36,10 +42,18 @@ export class LoaderScene extends Scene {
     void character;
     void gameManager;
     void gameState;
+    void audioManager;
   }
 
   create() {
-    this.scene.start("MainScene");
+    WebFont.load({
+      google: {
+        families: ["Amatic SC"]
+      },
+      active: () => {
+        this.scene.start("MainScene");
+      }
+    });
   }
 
 }

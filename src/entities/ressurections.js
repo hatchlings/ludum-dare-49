@@ -18,7 +18,7 @@ export class Ressurections {
     }
 
     createTextBlock() {
-        this.count = this.scene.add.text(630, 80, `Ressurections: ${character.deathCount}`);
+        this.count = this.scene.add.text(660, 80, `Ressurections: ${character.deathCount}`, {fontFamily: "Amatic SC", fontSize: 18, stroke: "#000", strokeThickness: 6});
     }
 
     updateCount() {

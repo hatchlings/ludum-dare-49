@@ -3,11 +3,11 @@ import eventBus from '../util/eventbus';
 import { animationTimeout } from '../util/timing';
 
 // Wait times for various Animations
-const APPLY_ENTROPY_WAIT = 1000;
-const DEATH_WAIT = 2000;
-const RESET_ENTROPY_WAIT = 1000;
-const APPLY_CHAOS_WAIT = 1000;
-const ROLL_CHAOS_WAIT = 1000;
+const APPLY_ENTROPY_WAIT = 500;
+const DEATH_WAIT = 100;
+const RESET_ENTROPY_WAIT = 500;
+const APPLY_CHAOS_WAIT = 500;
+const ROLL_CHAOS_WAIT = 500;
 
 class GameManager {
     constructor() {
@@ -64,9 +64,19 @@ class GameManager {
                 }
             })
             .then(() => {
-                if (this.isDead()) {
-                    return this.handleDeath();
-                }
+                
+                /* This is firing off BEFORE rollForChaos is complete */
+                /* Hacked in this temp solution. */
+
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        if (this.isDead()) {
+                            resolve(this.handleDeath());
+                        } else {
+                            resolve()
+                        }
+                    }, ROLL_CHAOS_WAIT + 500);
+                });
             })
             .then(() => {
                 eventBus.emit('game:enableInput');
@@ -124,7 +134,7 @@ class GameManager {
             const roll = Phaser.Math.RND.between(1, 10);
             if (roll <= character.entropy) {
                 console.log(`Chaos HIT. Rolled ${roll}, entropy was ${character.entropy}.`);
-                this.applyChaos();
+                return this.applyChaos();
             } else {
                 console.log(`Chaos MISSED. Rolled ${roll}, entropy was ${character.entropy}.`);
             }
