@@ -5,10 +5,19 @@ export function animationTimeout(ms, signal, callback) {
     // Prefer currentTime, as it'll better sync animtions queued in the
     // same frame, but if it isn't supported, performance.now() is fine.
     const start = document.timeline ? document.timeline.currentTime : performance.now();
+    let res, rej;
+    const prom = new Promise((resolve, reject) => {
+        res = resolve;
+        rej = reject;
+    });
 
     function frame(time) {
-        if (signal.aborted) return;
+        if (signal?.aborted) {
+            rej();
+            return;
+        }
         callback(time);
+        res();
     }
 
     function scheduleFrame(time) {
@@ -18,8 +27,8 @@ export function animationTimeout(ms, signal, callback) {
         const delay = targetNext - performance.now();
         setTimeout(() => requestAnimationFrame(frame), delay);
     }
-
     scheduleFrame(start);
+    return prom;
 }
 
 export function animationInterval(ms, signal, callback) {
@@ -28,7 +37,7 @@ export function animationInterval(ms, signal, callback) {
     const start = document.timeline ? document.timeline.currentTime : performance.now();
 
     function frame(time) {
-        if (signal.aborted) return;
+        if (signal?.aborted) return;
         callback(time);
         scheduleFrame(time);
     }
