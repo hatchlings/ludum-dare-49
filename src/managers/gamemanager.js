@@ -65,19 +65,11 @@ class GameManager {
             })
             .then(() => {
                 if (this.isDead()) {
-                    return this.handleDeath().then(() => {
-                        return false;
-                    });
+                    return this.handleDeath();
                 }
-                return true;
             })
-            .then((isAlive) => {
-                if (character.entropy >= 6) {
-                    console.log('Maxed out entropy, forcing home.');
-                    this.forceHome();
-                } else {
-                    eventBus.emit('game:enableInput');
-                }
+            .then(() => {
+                eventBus.emit('game:enableInput');
             });
     }
 
@@ -178,7 +170,6 @@ class GameManager {
         return animationTimeout(DEATH_WAIT, undefined, () => {
             character.resetForRound();
             this.mapScene.returnHome();
-            eventBus.emit('game:enableInput');
         });
     }
 
