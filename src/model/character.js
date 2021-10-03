@@ -61,7 +61,7 @@ class Character {
     }
 
     applyRndBane() {
-        this.entropyCapacity += Phaser.Math.RND.pick([1, 2, 3]);
+        this.entropyCapacity += Phaser.Math.RND.pick([0, 0, 1, 2, 3]);
     }
 
     // applyRndBoon() {
