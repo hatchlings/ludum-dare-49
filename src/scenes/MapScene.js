@@ -4,6 +4,7 @@ import { Fortune } from '../entities/fortune';
 import { MapCharacter } from '../entities/mapcharacter';
 import { MapIcon } from '../entities/mapicon';
 import { Ressurections } from '../entities/ressurections';
+import { ShardRing } from '../entities/shardring';
 import { Stats } from '../entities/stats';
 import gameManager from '../managers/gamemanager';
 
@@ -32,6 +33,7 @@ export class MapScene extends Scene {
         this.ressurections = new Ressurections(this);
         this.entropy = new Entropy(this);
         this.fortune = new Fortune(this, 480, 20);
+        this.shardRing = new ShardRing(this)
 
         this.addTravelPoints();
         this.addCharacter();
@@ -67,6 +69,7 @@ export class MapScene extends Scene {
         this.ressurections.cleanup();
         this.entropy.cleanup();
         this.fortune.cleanup();
+        this.shardRing.cleanup();
 
         this.travelPoints.forEach((tp) => {
             tp.cleanup();
