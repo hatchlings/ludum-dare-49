@@ -57,7 +57,7 @@ export class LoaderScene extends Scene {
     this.load.image("eye", "/assets/final/eye.png");
     this.load.image("shardroll", "/assets/final/shardroll.png");
     this.load.image("shield", "/assets/final/shield.png");
-
+    
     STAT_TYPES.forEach((type) => {
       for(let i = 1; i <= 5; i++) {
         if(i <= 3) {
@@ -71,7 +71,7 @@ export class LoaderScene extends Scene {
     this.load.audio("large-stat-increase", "/assets/final/audio/largestatincrease.mp3");
     this.load.audio("whiff", "/assets/final/audio/whiff.mp3");
     this.load.audio("chaosroll", "/assets/final/audio/chaosroll.mp3");
-    this.load.audio("chaoshits", "/assets/final/audio/ChaosHits_gong.mp3");
+    this.load.audio("chaoshits", "/assets/final/audio/chaoshits.mp3");
     this.load.audio("whitenoise", "/assets/final/audio/whitenoise.mp3");
     this.load.audio("melody", "/assets/final/audio/melody.mp3");
 
