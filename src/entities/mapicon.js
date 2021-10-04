@@ -11,6 +11,13 @@ const CHARACTER_STAND_OFFSETS = {
     HOME: { x: 0, y: 0 },
 };
 
+const ORB_GLOW_COLORS = {
+    "EARTH": {r: 0, g: 255, b: 0},
+    "WATER": {r: 0, g: 0, b: 255},
+    "AIR": {r: 255, g: 0, b: 255},
+    "FIRE": {r: 255, g: 0, b: 0}
+}
+
 const ORB_OFFSETS = {
     EARTH: [
         { x: 0, y: -20 },
@@ -74,8 +81,12 @@ export class MapIcon {
     }
 
     update() {
-        //this.updateOrbs();
-        //this.updateIsland();
+        this.orbPool.forEach((orb) => {
+            if(orb) {
+                orb.glow.x = orb.x;
+                orb.glow.y = orb.y;
+            }
+        });
     }
 
     startOrbit() {
@@ -162,6 +173,7 @@ export class MapIcon {
     }
 
     addToScene() {
+
         if (this.type === 'HOME') {
             this.sprite = this.scene.add.sprite(this._x, this._y, 'cat');
             this.sprite.setScale(0.75);
@@ -214,6 +226,8 @@ export class MapIcon {
 
     createOrbs() {
         this.orbPool = [];
+        this.glowPool = [];
+
         let startPoint = this.path.getPoint(0);
         this.offsets = ORB_OFFSETS[this.type];
 
@@ -230,6 +244,34 @@ export class MapIcon {
                 startPoint.y + loc.y,
                 `${this.type}-ORB-${orbState}`
             );
+
+            const glow = this.scene.add.pointlight(
+                startPoint.x + loc.x,
+                startPoint.y + loc.y,
+                0,
+                15
+            );
+
+            orb.glow = glow;
+
+            const c = ORB_GLOW_COLORS[this.type];
+
+            glow.color.setTo(c.r, c.g, c.b);
+            glow.attenuation = 0.50;
+            glow.intensity = 2;
+
+            this.scene.tweens.add({
+                targets: glow,
+                radius: "-=5",
+                yoyo: true,
+                duration: 1000,
+                ease: "Sine.easeInOut",
+                repeat: -1
+            });
+
+            this.glowPool.push(glow);
+            
+            orb.setDepth(orb.glow.depth + 1);
 
             orb.pathOffset = new Phaser.Math.Vector2(0, 0);
 
@@ -320,6 +362,11 @@ export class MapIcon {
         let newState = this.state;
 
         if (stat <= 0) {
+
+            this.glowPool.forEach((glow) => {
+                glow.setVisible(false);
+            });
+
             setTimeout(() => {
                 this.scene.tweens.add({
                     targets: this.orbPool.concat([this.sprite]),
