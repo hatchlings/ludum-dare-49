@@ -29,7 +29,7 @@ export class LoaderScene extends Scene {
     this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
 
 
-    this.load.image("background", "/assets/final/background.png");
+    this.load.image("background", "/assets/final/gamebg3.png");
 
     this.load.image("character", "/assets/final/character.png");
     this.load.atlas("character-good-staff", "/assets/final/goodstaffsprite.png", "/assets/final/goodstaffsprite.json");
