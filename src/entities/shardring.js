@@ -25,6 +25,7 @@ export class ShardRing {
         this.pointPool = [];
         this.shardPool = [];
 
+        this.addBacklight(0);
         this.createEntropy();
         this.setupListeners();
     }
@@ -106,6 +107,24 @@ export class ShardRing {
         this.entropyIndex++;
     }
 
+    addBacklight(radius) {
+        let intensity = 0.35;
+        let attenuation = 0.21;
+        this.backlight && this.backlight.destroy();
+        this.backlight = this.scene.add.pointlight(512, 384, 0, radius, intensity);
+        this.backlight.color.setTo(50, 0, 50);
+        this.backlight.attenuation = attenuation;
+    }
+
+    updateBacklight() {
+        this.scene.tweens.add({
+            targets: this.backlight,
+            radius: (200 * this.currentEntropy + 1) / this.capacity,
+            duration: 500,
+            ease: 'Sine.easeInOut',
+        });
+    }
+
     updateEntropy() {
         if(this.capacity !== character.entropyCapacity) {
             this.capacity = character.entropyCapacity;
@@ -130,6 +149,7 @@ export class ShardRing {
                 }
             });
         }
+        this.updateBacklight();
     }
 
     cleanup() {
