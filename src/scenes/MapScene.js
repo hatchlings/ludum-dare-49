@@ -1,6 +1,7 @@
 import { Scene } from 'phaser';
 import { Fortune } from '../entities/fortune';
 import { MapCharacter } from '../entities/mapcharacter';
+//import { MapLines } from '../entities/maplines';
 import { MapIcon } from '../entities/mapicon';
 import { Roll } from '../entities/roll';
 import { ShardRing } from '../entities/shardring';
@@ -46,13 +47,13 @@ export class MapScene extends Scene {
 
         this.fortune = new Fortune(this, 960, 10);
         this.shardRing = new ShardRing(this);
-        //this.mapLines = new MapLines(this);
 
         this.orbit = new Phaser.Curves.Path(ORBIT_CENTER.x + ORBIT_WIDTH / 2, ORBIT_CENTER.y - 40);
         this.orbit.ellipseTo(ORBIT_WIDTH / 2, ORBIT_HEIGHT / 2, 0, 360, true, ORBIT_ANGLE);
 
         this.addTravelPoints();
         this.addLocations();
+        //this.mapLines = new MapLines(this, ORBIT_CENTER);
         this.addCharacter();
         
         this.roll = new Roll(this);
@@ -67,6 +68,7 @@ export class MapScene extends Scene {
     update(time, delta) {
         this.updateLocations();
         this.character.update();
+        //this.mapLines.update();
     }
 
     addCharacter() {

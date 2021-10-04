@@ -23,6 +23,8 @@ export class ShardRing {
 
         this.pointPool = [];
         this.shardPool = [];
+        this.emitters = [];
+        this.particles = this.scene.add.particles('shardspark');
 
         this.addBacklight(0);
         this.createEntropy();
@@ -61,18 +63,30 @@ export class ShardRing {
     }
 
     createShards() {
+        this.emitters = [];
         this.pointPool.forEach((p) => {
             const shard = this.scene.add.sprite(p.x + 1024 / 2, p.y + 768 / 2, 'shard');
             shard.setScale(0.5);
             shard.setAlpha(0.7);
             shard.activeShard = false;
             this.shardPool.push(shard);
+
+            let emitter = this.particles.createEmitter();
+
+            emitter.setPosition(shard.x, shard.y);
+            emitter.setSpeed(20);
+            emitter.setBlendMode(Phaser.BlendModes.ADD);
+            emitter.stop();
+            this.emitters.push(emitter);
         });
     }
 
     destroyShards() {
         this.shardPool.forEach((shard) => {
             shard.destroy();
+        });
+        this.emitters.forEach((emitter) => {
+            emitter.remove();
         });
     }
 
@@ -149,8 +163,10 @@ export class ShardRing {
             this.shardPool.forEach((shard, index) => {
                 if (index < this.currentEntropy) {
                     shard.setAlpha(1);
+                    this.emitters[index].start();
                 } else {
-                    shard.setAlpha(0.7);
+                    shard.setAlpha(0.5);
+                    this.emitters[index].stop();
                 }
             });
         }
