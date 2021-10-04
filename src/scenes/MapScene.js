@@ -36,16 +36,16 @@ export class MapScene extends Scene {
         this.shardRing = new ShardRing(this);
         this.mapLines = new MapLines(this);
 
-        this.orbit = new Phaser.Curves.Path(ORBIT_CENTER.x + (ORBIT_WIDTH / 2), ORBIT_CENTER.y - 40);
+        this.orbit = new Phaser.Curves.Path(ORBIT_CENTER.x + ORBIT_WIDTH / 2, ORBIT_CENTER.y - 40);
         this.orbit.ellipseTo(ORBIT_WIDTH / 2, ORBIT_HEIGHT / 2, 0, 360, true, ORBIT_ANGLE);
 
         this.addTravelPoints();
         this.addLocations();
         this.addCharacter();
+        this.startOrbits();
 
         this.input.keyboard.on('keyup-B', () => {
             this.scene.start('MainScene');
-            this.startOrbits();
         });
     }
 
@@ -65,7 +65,7 @@ export class MapScene extends Scene {
 
     addLocations() {
         this.orbitLocations = ORBIT_LOCATIONS.map((location) => {
-            const tp = new MapIcon(this, 0, 0, location.type, this.orbit, location.startAt)
+            const tp = new MapIcon(this, 0, 0, location.type, this.orbit, location.startAt);
             this.travelPoints.push(tp);
             return tp;
         });
@@ -82,7 +82,7 @@ export class MapScene extends Scene {
             island.update();
         });
     }
-    
+
     updateCharacter() {}
 
     returnHome() {

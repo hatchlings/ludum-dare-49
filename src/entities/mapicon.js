@@ -51,25 +51,30 @@ export class MapIcon {
         this.path = path;
         this.state = 1;
         this.scale = 1.0;
+        this.start = document.timeline ? document.timeline.currentTime : performance.now();
 
         this.setupListeners();
         this.addToScene();
     }
 
     get x() {
+        console.log(`${this.type} at ${this.sprite.pathVector.x}`);
         return this.sprite.x;
     }
 
     get y() {
+        console.log(`${this.type} at ${this.sprite.pathVector.y}`);
         return this.sprite.y;
     }
 
     update() {
-        //nothing yet...
+        //this.updateOrbs();
+        //this.updateIsland();
     }
 
     startOrbit() {
         if (this.type !== 'HOME') {
+            console.log('ORBIT START');
             this.sprite.startFollow({
                 duration: 60000,
                 yoyo: false,
@@ -78,13 +83,33 @@ export class MapIcon {
                 positionOnPath: true,
                 startAt: this.startAt,
             });
+            this.orbPool.forEach((orb) => {
+                orb.startFollow({
+                    duration: 60000,
+                    yoyo: false,
+                    repeat: -1,
+                    rotateToPath: false,
+                    positionOnPath: false,
+                    startAt: this.startAt,
+                });
+            });
         }
     }
     resumeOrbit() {
-        if (this.type !== 'HOME') this.sprite.resumeFollow();
+        if (this.type !== 'HOME') {
+            this.sprite.resumeFollow();
+            this.orbPool.forEach((orb) => {
+                orb.resumeFollow();
+            });
+        }
     }
     pauseOrbit() {
-        if (this.type !== 'HOME') this.sprite.pauseFollow();
+        if (this.type !== 'HOME') {
+            this.sprite.pauseFollow();
+            this.orbPool.forEach((orb) => {
+                orb.pauseFollow();
+            });
+        }
     }
 
     setupListeners() {
@@ -103,7 +128,7 @@ export class MapIcon {
         eventBus.on('game:resumeOrbit', this.fnResume);
 
         eventBus.on(`game:${this.type}Hit`, this.onTypeHit);
-        eventBus.on("game:statsUpdated", this.onStatsUpdated);
+        eventBus.on('game:statsUpdated', this.onStatsUpdated);
     }
 
     statsUpdated() {
@@ -131,7 +156,7 @@ export class MapIcon {
             this.sprite.setScale(0.75);
             this.scale = 0.75;
         } else {
-            let startPoint = this.path.getPoint(this.startAt);
+            let startPoint = this.path.getPoint(0);
             this.sprite = this.scene.add.follower(
                 this.path,
                 startPoint.x,
@@ -141,7 +166,7 @@ export class MapIcon {
             this.sprite.setScale(0.5);
             this.scale = 0.5;
         }
-
+        this.sprite.pathOffset = new Phaser.Math.Vector2(0, 0);
         if (this.type !== 'HOME') {
             this.createOrbs();
         }
@@ -153,7 +178,7 @@ export class MapIcon {
         this.sprite.on('pointerout', this.hoverOff.bind(this));
 
         this.scene.tweens.add({
-            targets: this.sprite,
+            targets: this.sprite.pathOffset,
             y: Phaser.Math.RND.pick(['-=3', '+=3']),
             duration: Phaser.Math.RND.between(1000, 2000),
             ease: 'Sine.easeInOut',
@@ -164,24 +189,27 @@ export class MapIcon {
 
     createOrbs() {
         this.orbPool = [];
+        let startPoint = this.path.getPoint(0);
+        this.offsets = ORB_OFFSETS[this.type];
 
-        const locs = ORB_OFFSETS[this.type];
-
-        locs.forEach((loc, index) => {
+        this.offsets.forEach((loc, index) => {
             let orbState = 1;
 
             if (index === 0) {
                 orbState = 3;
             }
 
-            const orb = this.scene.add.sprite(
-                this.sprite.x + loc.x,
-                this.sprite.y + loc.y,
+            const orb = this.scene.add.follower(
+                this.path,
+                startPoint.x + loc.x,
+                startPoint.y + loc.y,
                 `${this.type}-ORB-${orbState}`
             );
 
+            orb.pathOffset = new Phaser.Math.Vector2(0, 0);
+
             this.scene.tweens.add({
-                targets: orb,
+                targets: orb.pathOffset,
                 y: Phaser.Math.RND.pick(['-=2', '+=2', '-=3', '+=3']),
                 yoyo: true,
                 duration: Phaser.Math.RND.pick([1500, 2000, 2500]),
@@ -229,30 +257,34 @@ export class MapIcon {
     onHit() {
         this.scene.tweens.add({
             targets: this.sprite,
-            x: Phaser.Math.RND.pick(["-=10", "+=10"]),
+            x: Phaser.Math.RND.pick(['-=10', '+=10']),
             duration: 50,
             yoyo: true,
             ease: 'Bounce.easeInOut',
-            onStart: () => { this.sprite.setTint(0xff0000); }, 
-            onComplete: () => { this.sprite.setTint(0xffffff); }
-        })
+            onStart: () => {
+                this.sprite.setTint(0xff0000);
+            },
+            onComplete: () => {
+                this.sprite.setTint(0xffffff);
+            },
+        });
     }
 
     calculateState() {
         const stat = character.stats[this.type];
         let newState = this.state;
 
-        if(stat <= 0) {
+        if (stat <= 0) {
             setTimeout(() => {
                 this.scene.tweens.add({
                     targets: this.orbPool.concat([this.sprite]),
                     alpha: 0,
-                    duration: 250
+                    duration: 250,
                 });
             }, 1000);
         }
 
-        if(stat < 4) {
+        if (stat < 4) {
             newState = 1;
         } else if (stat >= 4 && stat < 6) {
             newState = 2;
@@ -341,7 +373,7 @@ export class MapIcon {
         eventBus.off('game:pauseOrbit', this.fnPause);
         eventBus.off('game:resumeOrbit', this.fnResume);
         eventBus.off(`game:${this.type}Hit`, this.onTypeHit);
-        eventBus.off("game:statsUpdated", this.onStatsUpdated);
+        eventBus.off('game:statsUpdated', this.onStatsUpdated);
         eventBus.off('game:statsUpdated', this.onStatsUpdated);
     }
 }
