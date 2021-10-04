@@ -12,11 +12,11 @@ const CHARACTER_STAND_OFFSETS = {
 };
 
 const ORB_GLOW_COLORS = {
-    "EARTH": {r: 0, g: 255, b: 0},
-    "WATER": {r: 0, g: 0, b: 255},
-    "AIR": {r: 255, g: 0, b: 255},
-    "FIRE": {r: 255, g: 0, b: 0}
-}
+    EARTH: { r: 0, g: 255, b: 0 },
+    WATER: { r: 0, g: 0, b: 255 },
+    AIR: { r: 255, g: 0, b: 255 },
+    FIRE: { r: 255, g: 0, b: 0 },
+};
 
 const ORB_OFFSETS = {
     EARTH: [
@@ -82,7 +82,7 @@ export class MapIcon {
 
     update() {
         this.orbPool.forEach((orb) => {
-            if(orb) {
+            if (orb) {
                 orb.glow.x = orb.x;
                 orb.glow.y = orb.y;
             }
@@ -173,7 +173,6 @@ export class MapIcon {
     }
 
     addToScene() {
-
         if (this.type === 'HOME') {
             this.sprite = this.scene.add.sprite(this._x, this._y, 'cat');
             this.sprite.setScale(0.75);
@@ -249,7 +248,7 @@ export class MapIcon {
                 startPoint.x + loc.x,
                 startPoint.y + loc.y,
                 0,
-                15
+                14
             );
 
             orb.glow = glow;
@@ -257,20 +256,20 @@ export class MapIcon {
             const c = ORB_GLOW_COLORS[this.type];
 
             glow.color.setTo(c.r, c.g, c.b);
-            glow.attenuation = 0.50;
-            glow.intensity = 2;
+            glow.attenuation = 0.5;
+            glow.intensity = 0.2;
 
             this.scene.tweens.add({
                 targets: glow,
-                radius: "-=5",
+                radius: '-=5',
                 yoyo: true,
-                duration: 1000,
-                ease: "Sine.easeInOut",
-                repeat: -1
+                duration: Phaser.Math.RND.pick([1200, 1300, 1400, 1500, 1600]),
+                ease: 'Sine.easeInOut',
+                repeat: -1,
             });
 
             this.glowPool.push(glow);
-            
+
             orb.setDepth(orb.glow.depth + 1);
 
             orb.pathOffset = new Phaser.Math.Vector2(0, 0);
@@ -335,7 +334,7 @@ export class MapIcon {
     }
 
     onShield() {
-        const shield = this.scene.add.sprite(this.sprite.x, this.sprite.y, "shield");
+        const shield = this.scene.add.sprite(this.sprite.x, this.sprite.y, 'shield');
         shield.setScale(0.45);
 
         new AnimatedText(
@@ -353,7 +352,7 @@ export class MapIcon {
             alpha: 0,
             onComplete: () => {
                 shield.destroy();
-            }
+            },
         });
     }
 
@@ -362,7 +361,6 @@ export class MapIcon {
         let newState = this.state;
 
         if (stat <= 0) {
-
             this.glowPool.forEach((glow) => {
                 glow.setVisible(false);
             });
