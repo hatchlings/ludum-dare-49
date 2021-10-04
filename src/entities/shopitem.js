@@ -25,26 +25,43 @@ export class ShopItem {
     }
 
     createItem() {
-        this.nameEntity = this.scene.add.text(this.x, this.y, this.name, {fontFamily: "Amatic SC", fontSize: 22});
-        this.descriptionEntity = this.scene.add.text(400, this.y, this.description, {fontFamily: "Amatic SC", fontSize: 22});
-        this.buyEntity = this.scene.add.text(740, this.y, `BUY FOR ${this.cost}`, {fontFamily: "Amatic SC", fontSize: 22});
+        this.nameEntity = this.scene.add.text(this.x + 100, this.y + 50, this.name, {fontFamily: "Amatic SC", fontSize: 32, stroke: "#000", strokeThickness: 6});
+        this.descriptionEntity = this.scene.add.text(360, this.y + 85, this.description, {fontFamily: "Amatic SC", fontSize: 22, stroke: "#000", strokeThickness: 6});
+        this.buyEntity = this.scene.add.text(640, this.y + 45, `${this.cost}`, {fontFamily: "Amatic SC", fontSize: 42, stroke: "#000", strokeThickness: 6});
         
-        this.fortuneIcon = this.scene.add.sprite(835, this.y + 10, "fortunecoin");
-        this.fortuneIcon.setScale(0.20);
+
+        this.ghostButton = this.scene.add.sprite(790, this.y + 70, "smallbuttonpressed");
+        this.ghostButton.setVisible(false);
+
+        this.newBuyEntity = this.scene.add.text(770, this.y + 51, "B U Y", {fontFamily: "Amatic SC", fontSize: 32, stroke: "#000", strokeThickness: 6});
+        
+        // this.fortuneIcon = this.scene.add.sprite(835, this.y + 10, "fortunecoin");
+        // this.fortuneIcon.setScale(0.20);
 
         if(this.filter && this.filter.f()) {
             this.purchasable = false;
-            this.buyEntity.text = this.filter.buyText;
-            this.buyEntity.setColor("#FF0000");
+            this.newBuyEntity.text = this.filter.buyText;
+            this.newBuyEntity.setColor("#FF0000");
             return;
         }
 
         if(!this.purchasable) {
-            this.buyEntity.setAlpha(0.3);
+           this.newBuyEntity.setAlpha(0.3);
         }
 
-        this.buyEntity.setInteractive();
-        this.buyEntity.on("pointerup", () => {
+        this.newBuyEntity.setInteractive({ useHandCursor: true });
+
+        this.newBuyEntity.on("pointerover", () => {
+            if(this.purchasable && !this.purchased) {
+                this.ghostButton.setVisible(true);
+            }
+        });
+
+        this.newBuyEntity.on("pointerout", () => {
+                this.ghostButton.setVisible(false);
+        })
+
+        this.newBuyEntity.on("pointerup", () => {
 
             if(this.quantity && this.quantity === "UNLIMITED") {
                 this.purchased = false;
@@ -52,8 +69,9 @@ export class ShopItem {
 
                 if(this.filter && this.filter.f()) {
                     this.purchasable = false;
-                    this.buyEntity.text = this.filter.buyText;
-                    this.buyEntity.setColor("#FF0000");
+                    this.newBuyEntity.text = this.filter.buyText;
+                    this.newBuyEntity.setColor("#FF0000");
+                    this.ghostButton.setVisible(false);
                     return;
                 }
             }
@@ -68,8 +86,9 @@ export class ShopItem {
 
                 if(this.filter && this.filter.f()) {
                     this.purchasable = false;
-                    this.buyEntity.text = this.filter.buyText;
-                    this.buyEntity.setColor("#FF0000");
+                    this.newBuyEntity.text = this.filter.buyText;
+                    this.newBuyEntity.setColor("#FF0000");
+                    this.ghostButton.setVisible(false);
                     return;
                 }
 
@@ -87,15 +106,19 @@ export class ShopItem {
 
                     this.nameEntity.text = this.name;
                     this.descriptionEntity.text = this.description;
-                    this.buyEntity.text = `BUY FOR ${this.cost}`;
+                    this.buyEntity.text = `${this.cost}`;
 
                     if(!this.purchasable) {
-                        this.buyEntity.setAlpha(0.3);
+                        this.newBuyEntity.setAlpha(0.3);
+                        this.ghostButton.setVisible(false);
                     }
                 } else {
                     if(!this.quantity) {
-                        this.buyEntity.setAlpha(0.5);
+                        //this.newBuyEntity.setAlpha(0.5);
                         this.buyEntity.setColor("#00FF00");
+                        this.newBuyEntity.setColor("#00FF00");
+                        this.newBuyEntity.text = "M A X"
+                        this.ghostButton.setVisible(false);
                     }
                 } 
             } else {
@@ -109,7 +132,8 @@ export class ShopItem {
         this.onFortuneUpdated = () => {
             this.purchasable = character.fortune >= this.cost;
             if(!this.purchasable && !this.purchased) {
-                this.buyEntity.setAlpha(0.3);
+                this.ghostButton.setVisible(false);
+                this.newBuyEntity.setAlpha(0.3);
             }
         };
 
