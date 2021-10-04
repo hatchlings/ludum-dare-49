@@ -2,6 +2,7 @@ import { Scene } from 'phaser';
 import { Fortune } from '../entities/fortune';
 import { MapCharacter } from '../entities/mapcharacter';
 import { MapIcon } from '../entities/mapicon';
+import { MapLines } from '../entities/maplines';
 import { ShardRing } from '../entities/shardring';
 import gameManager from '../managers/gamemanager';
 
@@ -25,6 +26,7 @@ export class MapScene extends Scene {
 
     create() {
         this.background = this.add.image(1024/2, 768/2, 'background');
+        this.mapLines = new MapLines(this);
 
         //this.stats = new Stats(this);
         //this.ressurections = new Ressurections(this);

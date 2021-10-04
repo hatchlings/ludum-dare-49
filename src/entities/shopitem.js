@@ -29,7 +29,7 @@ export class ShopItem {
         this.descriptionEntity = this.scene.add.text(400, this.y, this.description, {fontFamily: "Amatic SC", fontSize: 22});
         this.buyEntity = this.scene.add.text(740, this.y, `BUY FOR ${this.cost}`, {fontFamily: "Amatic SC", fontSize: 22});
         
-        this.fortuneIcon = this.scene.add.sprite(820, this.y + 10, "fortunecoin");
+        this.fortuneIcon = this.scene.add.sprite(835, this.y + 10, "fortunecoin");
         this.fortuneIcon.setScale(0.20);
 
         if(this.filter && this.filter.f()) {
