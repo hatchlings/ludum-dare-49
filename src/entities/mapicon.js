@@ -60,8 +60,12 @@ export class MapIcon {
             this.statsUpdated();
         };
 
-        eventBus.on("game:statsUpdated", this.onStatsUpdated);
+        this.onTypeHit = () => {
+            this.onHit();
+        };
 
+        eventBus.on(`game:${this.type}Hit`, this.onTypeHit);
+        eventBus.on("game:statsUpdated", this.onStatsUpdated);
     }
 
     statsUpdated() {
@@ -183,9 +187,29 @@ export class MapIcon {
         }
     }
 
+    onHit() {
+        this.scene.tweens.add({
+            targets: this.sprite,
+            x: Phaser.Math.RND.pick(["-=10", "+=10"]),
+            duration: 50,
+            yoyo: true,
+            ease: 'Bounce.easeInOut',
+            onStart: () => { this.sprite.setTint(0xff0000); }, 
+            onComplete: () => { this.sprite.setTint(0xffffff); }
+        })
+    }
+
     calculateState() {
         const stat = character.stats[this.type];
         let newState = this.state;
+
+        if(stat <= 0) {
+            this.scene.tweens.add({
+                targets: this.orbPool.concat([this.sprite]),
+                alpha: 0,
+                duration: 250
+            });
+        }
 
         if(stat < 4) {
             newState = 1;

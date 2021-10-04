@@ -96,6 +96,7 @@ export class ShardRing {
             x: dest.x,
             y: dest.y,
             onComplete: () => {
+                eventBus.emit(`game:${type}Hit`);
                 duplicateShard.destroy();
             }
         });
