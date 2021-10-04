@@ -6,14 +6,16 @@ import { MapLines } from '../entities/maplines';
 import { ShardRing } from '../entities/shardring';
 import gameManager from '../managers/gamemanager';
 
-const TRAVEL_POS = [
-    { x: 512, y: 90 },
-    { x: 874, y: 384 },
-    { x: 512, y: 618 },
-    { x: 150, y: 394 },
+const ORBIT_LOCATIONS = [
+    { type: 'AIR', startAt: 0 },
+    { type: 'FIRE', startAt: 0.75 },
+    { type: 'WATER', startAt: 0.5 },
+    { type: 'EARTH', startAt: 0.25 },
 ];
-
-const LOCATIONS = ['EARTH', 'AIR', 'FIRE', 'WATER'];
+const ORBIT_CENTER = { x: 512, y: 390 }; //Also HOME position
+const ORBIT_WIDTH = 700;
+const ORBIT_HEIGHT = 500;
+const ORBIT_ANGLE = 0; //degrees
 
 export class MapScene extends Scene {
     constructor() {
@@ -25,55 +27,74 @@ export class MapScene extends Scene {
     }
 
     create() {
-        this.background = this.add.image(1024/2, 768/2, 'background');
+        this.background = this.add.image(400, 300, 'background');
+
+        // this.stats = new Stats(this);
+        // this.ressurections = new Ressurections(this);
+        // this.entropy = new Entropy(this);
+        this.fortune = new Fortune(this, 960, 10);
+        this.shardRing = new ShardRing(this);
         this.mapLines = new MapLines(this);
 
-        //this.stats = new Stats(this);
-        //this.ressurections = new Ressurections(this);
-        //this.entropy = new Entropy(this);
-        this.fortune = new Fortune(this, 950, 10);
-        this.shardRing = new ShardRing(this)
+        this.orbit = new Phaser.Curves.Path(ORBIT_CENTER.x + (ORBIT_WIDTH / 2), ORBIT_CENTER.y - 40);
+        this.orbit.ellipseTo(ORBIT_WIDTH / 2, ORBIT_HEIGHT / 2, 0, 360, true, ORBIT_ANGLE);
 
         this.addTravelPoints();
+        this.addLocations();
         this.addCharacter();
 
         this.input.keyboard.on('keyup-B', () => {
             this.scene.start('MainScene');
+            this.startOrbits();
         });
+    }
+
+    update(time, delta) {
+        this.updateLocations();
+        this.updateCharacter();
     }
 
     addCharacter() {
-        this.character = new MapCharacter(this, 512, 384);
+        this.character = new MapCharacter(this, ORBIT_CENTER.x, ORBIT_CENTER.y);
     }
 
     addTravelPoints() {
-        const home = new MapIcon(this, 512, 384, 'HOME', 0);
+        const home = new MapIcon(this, ORBIT_CENTER.x, ORBIT_CENTER.y, 'HOME');
         this.travelPoints.push(home);
+    }
 
-        LOCATIONS.forEach((location, index) => {
-            const tp = new MapIcon(
-                this,
-                TRAVEL_POS[index].x,
-                TRAVEL_POS[index].y,
-                location,
-                index + 1
-            );
+    addLocations() {
+        this.orbitLocations = ORBIT_LOCATIONS.map((location) => {
+            const tp = new MapIcon(this, 0, 0, location.type, this.orbit, location.startAt)
             this.travelPoints.push(tp);
+            return tp;
         });
     }
 
+    startOrbits() {
+        this.orbitLocations.forEach((island) => {
+            island.startOrbit();
+        });
+    }
+
+    updateLocations() {
+        this.orbitLocations.forEach((island) => {
+            island.update();
+        });
+    }
+    
+    updateCharacter() {}
+
     returnHome() {
         this.character.cleanup();
-        //this.stats.cleanup();
-        //this.ressurections.cleanup();
-        //this.entropy.cleanup();
+        // this.stats.cleanup();
+        // this.ressurections.cleanup();
+        // this.entropy.cleanup();
         this.fortune.cleanup();
         this.shardRing.cleanup();
 
         this.travelPoints.forEach((tp) => {
-            if(tp) {
-                tp.cleanup();
-            }
+            tp.cleanup();
         });
 
         this.scene.start('MainScene');

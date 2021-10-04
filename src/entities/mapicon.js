@@ -54,9 +54,6 @@ export class MapIcon {
 
         this.setupListeners();
         this.addToScene();
-
-        eventBus.on('game:pauseOrbit', this.pauseOrbit.bind(this));
-        eventBus.on('game:resumeOrbit', this.resumeOrbit.bind(this));
     }
 
     get x() {
@@ -95,7 +92,18 @@ export class MapIcon {
             this.statsUpdated();
         };
 
-        eventBus.on('game:statsUpdated', this.onStatsUpdated);
+        this.onTypeHit = () => {
+            this.onHit();
+        };
+
+        this.fnPause = this.pauseOrbit.bind(this);
+        this.fnResume = this.resumeOrbit.bind(this);
+
+        eventBus.on('game:pauseOrbit', this.fnPause);
+        eventBus.on('game:resumeOrbit', this.fnResume);
+
+        eventBus.on(`game:${this.type}Hit`, this.onTypeHit);
+        eventBus.on("game:statsUpdated", this.onStatsUpdated);
     }
 
     statsUpdated() {
@@ -144,14 +152,14 @@ export class MapIcon {
         this.sprite.on('pointerover', this.hoverOver.bind(this));
         this.sprite.on('pointerout', this.hoverOff.bind(this));
 
-        // this.scene.tweens.add({
-        //     targets: this.sprite,
-        //     y: '-=3',
-        //     duration: 1000,
-        //     ease: 'Sine.easeInOut',
-        //     yoyo: true,
-        //     repeat: -1,
-        // });
+        this.scene.tweens.add({
+            targets: this.sprite,
+            y: '-=3',
+            duration: 1000,
+            ease: 'Sine.easeInOut',
+            yoyo: true,
+            repeat: -1,
+        });
     }
 
     createOrbs() {
@@ -218,11 +226,34 @@ export class MapIcon {
         }
     }
 
+    onHit() {
+        console.log("here??");
+        this.scene.tweens.add({
+            targets: this.sprite,
+            x: Phaser.Math.RND.pick(["-=10", "+=10"]),
+            duration: 50,
+            yoyo: true,
+            ease: 'Bounce.easeInOut',
+            onStart: () => { this.sprite.setTint(0xff0000); }, 
+            onComplete: () => { this.sprite.setTint(0xffffff); }
+        })
+    }
+
     calculateState() {
         const stat = character.stats[this.type];
         let newState = this.state;
 
-        if (stat < 4) {
+        if(stat <= 0) {
+            setTimeout(() => {
+                this.scene.tweens.add({
+                    targets: this.orbPool.concat([this.sprite]),
+                    alpha: 0,
+                    duration: 250
+                });
+            }, 1000);
+        }
+
+        if(stat < 4) {
             newState = 1;
         } else if (stat >= 4 && stat < 6) {
             newState = 2;
@@ -308,6 +339,10 @@ export class MapIcon {
     }
 
     cleanup() {
+        eventBus.off('game:pauseOrbit', this.fnPause);
+        eventBus.off('game:resumeOrbit', this.fnResume);
+        eventBus.off(`game:${this.type}Hit`, this.onTypeHit);
+        eventBus.off("game:statsUpdated", this.onStatsUpdated);
         eventBus.off('game:statsUpdated', this.onStatsUpdated);
     }
 }

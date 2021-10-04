@@ -132,7 +132,7 @@ export class ShardRing {
 
     cleanup() {
         eventBus.off("game:entropyUpdated", this.onEntropyUpdated);
-        eventBus.off("game:damageIsland", this.onAttack)
+        eventBus.off("game:damageIsland", this.onAttack);
     }
 
 }
