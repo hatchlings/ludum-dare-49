@@ -2,14 +2,13 @@ import character from '../model/character';
 import eventBus from '../util/eventbus';
 
 const ATTACK_POS = {
-    "EARTH": { x: 512, y: 90 },
-    "AIR": { x: 874, y: 384 },
-    "FIRE": { x: 512, y: 618 },
-    "WATER": { x: 150, y: 394 },
+    EARTH: { x: 512, y: 90 },
+    AIR: { x: 874, y: 384 },
+    FIRE: { x: 512, y: 618 },
+    WATER: { x: 150, y: 394 },
 };
 
 export class ShardRing {
-
     constructor(scene) {
         this.scene = scene;
 
@@ -25,6 +24,7 @@ export class ShardRing {
         this.pointPool = [];
         this.shardPool = [];
 
+        this.addBacklight(0);
         this.createEntropy();
         this.setupListeners();
     }
@@ -38,58 +38,64 @@ export class ShardRing {
             this.attack(type);
         };
 
-        eventBus.on("game:entropyUpdated", this.onEntropyUpdated);
-        eventBus.on("game:damageIsland", this.onAttack)
+        eventBus.on('game:entropyUpdated', this.onEntropyUpdated);
+        eventBus.on('game:damageIsland', this.onAttack);
     }
 
     createEntropy() {
-        console.log(`Creating ${character.entropyCapacity} shards with ${character.entropy} active.`);
+        console.log(
+            `Creating ${character.entropyCapacity} shards with ${character.entropy} active.`
+        );
         this.createShardPoints();
         this.createShards();
     }
 
     createShardPoints() {
-        for(let i = 0; i < this.points; i++) {
+        for (let i = 0; i < this.points; i++) {
             const point = {
                 x: this.radius * Math.cos((i * 2 * Math.PI) / this.points),
-                y: this.radius * Math.sin((i * 2 * Math.PI) / this.points)
-            }
+                y: this.radius * Math.sin((i * 2 * Math.PI) / this.points),
+            };
             this.pointPool.push(point);
         }
-
     }
 
     createShards() {
         this.pointPool.forEach((p) => {
-            const shard = this.scene.add.sprite(p.x + (1024 / 2), p.y + (768 / 2), "shard");
+            const shard = this.scene.add.sprite(p.x + 1024 / 2, p.y + 768 / 2, 'shard');
             shard.setScale(0.5);
             shard.setAlpha(0.3);
             shard.activeShard = false;
             this.shardPool.push(shard);
-        })
+        });
     }
 
     destroyShards() {
         this.shardPool.forEach((shard) => {
             shard.destroy();
-        })
+        });
     }
 
     attack(type) {
         console.log(`Sending shard ${this.entropyIndex} to type ${type}`);
-        let attackShard = this.shardPool[this.entropyIndex];    
-        let duplicateShard = this.scene.add.sprite(attackShard.x, attackShard.y, "shard");
+        let attackShard = this.shardPool[this.entropyIndex];
+        let duplicateShard = this.scene.add.sprite(attackShard.x, attackShard.y, 'shard');
         duplicateShard.setScale(0.5);
 
         attackShard.setAlpha(0.3);
 
         const dest = ATTACK_POS[type];
-        const angleBetween = Phaser.Math.Angle.Between(duplicateShard.x, duplicateShard.y, dest.x, dest.y);
+        const angleBetween = Phaser.Math.Angle.Between(
+            duplicateShard.x,
+            duplicateShard.y,
+            dest.x,
+            dest.y
+        );
 
         this.scene.tweens.add({
             targets: duplicateShard,
             duration: 500,
-            angle: angleBetween + 45
+            angle: angleBetween + 45,
         });
 
         this.scene.tweens.add({
@@ -100,41 +106,57 @@ export class ShardRing {
             onComplete: () => {
                 eventBus.emit(`game:${type}Hit`);
                 duplicateShard.destroy();
-            }
+            },
         });
 
         this.entropyIndex++;
     }
 
+    addBacklight(radius) {
+        let intensity = 0.35;
+        let attenuation = 0.21;
+        this.backlight && this.backlight.destroy();
+        this.backlight = this.scene.add.pointlight(512, 384, 0, radius, intensity);
+        this.backlight.color.setTo(50, 0, 50);
+        this.backlight.attenuation = attenuation;
+    }
+    updateBacklight() {
+        this.scene.tweens.add({
+            targets: this.backlight,
+            radius: (200 * this.currentEntropy + 1) / this.capacity,
+            duration: 500,
+            ease: 'Sine.easeInOut',
+        });
+    }
+
     updateEntropy() {
-        if(this.capacity !== character.entropyCapacity) {
+        if (this.capacity !== character.entropyCapacity) {
             this.capacity = character.entropyCapacity;
 
             this.pointPool = [];
             this.createShardPoints();
             this.destroyShards();
             this.createShards();
-        } else if(this.currentEntropy !== character.entropy) {
-
-            if(character.entropy < this.currentEntropy) {
+        } else if (this.currentEntropy !== character.entropy) {
+            if (character.entropy < this.currentEntropy) {
                 this.entropyIndex = 0;
             }
 
-            this.currentEntropy = character.entropy
+            this.currentEntropy = character.entropy;
 
             this.shardPool.forEach((shard, index) => {
-                if(index < this.currentEntropy) {
+                if (index < this.currentEntropy) {
                     shard.setAlpha(1);
                 } else {
                     shard.setAlpha(0.3);
                 }
             });
         }
+        this.updateBacklight();
     }
 
     cleanup() {
-        eventBus.off("game:entropyUpdated", this.onEntropyUpdated);
-        eventBus.off("game:damageIsland", this.onAttack);
+        eventBus.off('game:entropyUpdated', this.onEntropyUpdated);
+        eventBus.off('game:damageIsland', this.onAttack);
     }
-
 }
