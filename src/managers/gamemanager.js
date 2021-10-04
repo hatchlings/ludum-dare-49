@@ -4,7 +4,7 @@ import { animationTimeout } from '../util/timing';
 
 // Wait times for various Animations
 const APPLY_ENTROPY_WAIT = 1000;
-const DEATH_WAIT = 1000;
+const DEATH_WAIT = 2000;
 const RESET_ENTROPY_WAIT = 1000;
 const APPLY_CHAOS_WAIT = 1000;
 const ROLL_CHAOS_WAIT = 1000;

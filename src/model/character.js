@@ -58,6 +58,9 @@ class Character {
     applyStat(stat, quantity) {
         this.stats[stat] = Phaser.Math.Clamp(this.stats[stat] + quantity, 0, 10);
         eventBus.emit('game:statsUpdated');
+        if(quantity < 0) {
+            eventBus.emit("game:damageIsland", stat);
+        }
     }
 
     applyPermanentStatBoost(stat, quantity) {
