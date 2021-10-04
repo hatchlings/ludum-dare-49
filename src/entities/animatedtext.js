@@ -16,7 +16,7 @@ export class AnimatedText {
     play() {
         const textEntity = this.scene.add.text(this.x, this.y, this.text, this.config);
         textEntity.setDepth(TEXT_DEPTH);
-        this.scene.tweens.add(Object.assign(this.animConfig, { targets: textEntity}));
+        this.scene.tweens.add(Object.assign(this.animConfig, { targets: textEntity }));
     }
 
 }

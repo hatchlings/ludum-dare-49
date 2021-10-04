@@ -1,5 +1,6 @@
 import character from '../model/character';
 import eventBus from '../util/eventbus';
+import { AnimatedText } from './animatedtext';
 
 export class Fortune {
 
@@ -29,6 +30,14 @@ export class Fortune {
 
     updateFortune() {
         this.fortuneText.text = character.fortune;
+        new AnimatedText(
+            this.scene,
+            this.fortuneText.x,
+            this.fortuneText.y + 50,
+            "+1",
+            {fontFamily: "Amatic SC", fontSize: 50, stroke: "#000", strokeThickness: 6},
+            {y: "+=20", duration: 1500, alpha: 0}
+        );
     }
 
     cleanup() {

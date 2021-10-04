@@ -155,6 +155,19 @@ export class MapIcon {
             this.sprite = this.scene.add.sprite(this._x, this._y, 'cat');
             this.sprite.setScale(0.75);
             this.scale = 0.75;
+
+            this.scene.anims.create({
+                key: "squish",
+                frames: "cat-squish",
+                frameRate: 8
+            });
+
+            this.onChaos = () => {
+                this.sprite.play("squish");
+            };
+
+            eventBus.on("game:chaosHit", this.onChaos);
+
         } else {
             let startPoint = this.path.getPoint(0);
             this.sprite = this.scene.add.follower(
@@ -370,6 +383,11 @@ export class MapIcon {
     }
 
     cleanup() {
+
+        if(this.onChaos) {
+            eventBus.off("game:chaosHit", this.onChaos);
+        }
+
         eventBus.off('game:pauseOrbit', this.fnPause);
         eventBus.off('game:resumeOrbit', this.fnResume);
         eventBus.off(`game:${this.type}Hit`, this.onTypeHit);

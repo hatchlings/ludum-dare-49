@@ -1,8 +1,8 @@
 class AudioManager {
 
     play(scene, key) {
-        const sound = scene.sound.add(key);
-        sound.play();
+        const s = scene.sound.add(key);
+        s.play();
     }
 
 }
