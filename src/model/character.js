@@ -40,6 +40,10 @@ class Character {
         return Object.values(this.stats).some((val) => val <= 0);
     }
 
+    get isWinner() {
+        return Object.values(this.stats).every((val) => val >= 10);
+    }
+
     applyPositionChange(location) {
         let increase = 1;
         switch (location.type) {
@@ -76,13 +80,15 @@ class Character {
         this.permanentStatBoosts[stat] += quantity;
     }
 
-    // applyRndBoon() {
-    //     let stat = Phaser.Math.RND.pick(Object.keys(this.stats));
-    //     this.applyPermanentStatBoost(stat, Phaser.Math.RND.pick([1, 2]));
-    // }
+    applyRndBoon() {
+        this.lastBoon = Phaser.Math.RND.pick([1,1,1,1,2,3]);
+        this.fortune += this.lastBoon;
+        eventBus.emit('game:fortuneUpdated', this.lastBoon);
+    }
 
     applyRndBane() {
-        this.entropyCapacity += Phaser.Math.RND.pick([0, 0, 1, 2, 3]);
+        this.lastBane = Phaser.Math.RND.pick([0, 0, 1, 2, 3])
+        this.entropyCapacity += this.lastBane;
         eventBus.emit('game:entropyUpdated');
     }
 
@@ -93,7 +99,7 @@ class Character {
 
     addFortune() {
         this.fortune += 1;
-        eventBus.emit('game:fortuneUpdated');
+        eventBus.emit('game:fortuneUpdated', 1);
     }
 
     removeFortune(quantity) {

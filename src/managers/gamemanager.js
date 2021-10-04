@@ -9,6 +9,7 @@ const RESET_ENTROPY_WAIT = 1000;
 const APPLY_CHAOS_WAIT = 1000;
 const ROLL_CHAOS_WAIT = 1000;
 const APPLY_STAT_BONUS_WAIT = 1000;
+const WIN_WAIT = 2000;
 
 class GameManager {
     constructor() {
@@ -70,6 +71,11 @@ class GameManager {
 
                 return new Promise((resolve) => {
                     setTimeout(() => {
+
+                        if(character.isWinner) {
+                            resolve(this.handleWinner());
+                        }
+
                         if (character.isDead) {
                             resolve(this.handleDeath());
                         } else {
@@ -168,14 +174,23 @@ class GameManager {
 
     handleDeath() {
         console.log('Oops, you died!');
-        character.applyRndBane();
 
         return animationTimeout(DEATH_WAIT, undefined, () => {
+            character.applyRndBane();
+            character.applyRndBoon();
             character.resetForRound();
             this.mapScene.returnHome();
         });
     }
+
+    handleWinner() {
+        return animationTimeout(WIN_WAIT, undefined, () => {
+            eventBus.emit("game:win");
+        });
+    }
+
 }
+
 
 let gameManager = new GameManager();
 export default gameManager;
