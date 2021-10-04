@@ -24,10 +24,10 @@ class GameManager {
         eventBus.on('game:turnEnded', this.processTurn.bind(this));
     }
 
-    positionChanged(pos, _data, name) {
-        character.applyPositionChange(pos, _data);
+    positionChanged(location) {
+        character.applyPositionChange(location);
         console.log(
-            `Position changed. Now located at ${pos}, entropy is now ${character.entropy}.`
+            `Position changed. Now located at ${location.type}, entropy is now ${character.entropy}.`
         );
     }
 
@@ -101,16 +101,16 @@ class GameManager {
 
         if (quantity <= 0) {
             console.log(`${character.staffName} failed! Stats: ${character.staffStats}.`);
-            eventBus.emit("game:staffFailure")
+            eventBus.emit('game:staffFailure');
         } else {
-            eventBus.emit("game:staffSuccess", quantity)
+            eventBus.emit('game:staffSuccess', quantity);
             const fortuneRoll = Phaser.Math.RND.between(1, 3);
             if (fortuneRoll <= 2) {
                 character.addFortune();
             }
         }
 
-        character.applyStat(type, quantity);;
+        character.applyStat(type, quantity);
 
         console.log(`${type} increased by ${quantity}. ${type} is now ${character.stats[type]}.`);
 
@@ -144,7 +144,7 @@ class GameManager {
 
     applyChaos() {
         return animationTimeout(APPLY_CHAOS_WAIT, undefined, () => {
-            eventBus.emit("game:chaosHit");
+            eventBus.emit('game:chaosHit');
             for (let i = 0; i < character.entropyCapacity; i++) {
                 const roll = Phaser.Math.RND.between(1, 6);
                 if (roll < 5) {
@@ -174,10 +174,6 @@ class GameManager {
             character.resetForRound();
             this.mapScene.returnHome();
         });
-    }
-
-    forceHome() {
-        eventBus.emit('game:positionChanged', 0, { x: 400, y: 300 }, 'HOME');
     }
 }
 

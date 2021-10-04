@@ -3,29 +3,41 @@ import eventBus from '../util/eventbus';
 import { AnimatedText } from './animatedtext';
 
 export class MapCharacter {
-
     constructor(scene, x, y) {
         this.scene = scene;
         this.x = x;
         this.y = y;
+        this.location;
+        this.moving = false;
+        this.locationChange = false;
+        this.tween = undefined;
 
         this.setupListeners();
         this.addToScene();
     }
 
-    setupListeners() {
+    update() {
+        if (this.location && !this.moving && !this.locationChange) {
+            if (this.location.playerLocation.x !== this.x) {
+                this.moveTo(this.location.playerLocation.x, this.location.playerLocation.y, 10);
+            }
+        }
+    }
 
-        this.onPositionChanged = (_pos, data) => {
-            this.moveTo(data.x, data.y);
+    setupListeners() {
+        this.onPositionChanged = (location) => {
+            this.location = location;
+            this.locationChange = true;
+            this.moveTo(location.playerLocation.x, location.playerLocation.y, 1000);
         };
 
         this.onStaffSuccess = (quantity) => {
-            this.sprite.play("good-staff");
+            this.sprite.play('good-staff');
 
-            if(quantity > 1) {
-                audioManager.play(this.scene, "large-stat-increase");
+            if (quantity > 1) {
+                audioManager.play(this.scene, 'large-stat-increase');
             } else {
-                audioManager.play(this.scene, "small-stat-increase");
+                audioManager.play(this.scene, 'small-stat-increase');
             }
 
             new AnimatedText(
@@ -33,71 +45,74 @@ export class MapCharacter {
                 this.sprite.x,
                 this.sprite.y,
                 `Success! +${quantity}`,
-                {fontFamily: "Amatic SC", fontSize: 50, stroke: "#000", strokeThickness: 6},
-                {y: "-=10", duration: 1500, alpha: 0}
+                { fontFamily: 'Amatic SC', fontSize: 50, stroke: '#000', strokeThickness: 6 },
+                { y: '-=10', duration: 1500, alpha: 0 }
             );
-        }
+        };
 
         this.onStaffFailure = () => {
-            this.sprite.play("bad-staff");
+            this.sprite.play('bad-staff');
             new AnimatedText(
                 this.scene,
                 this.sprite.x,
                 this.sprite.y,
-                "Staff failed!",
-                {fontFamily: "Amatic SC", fontSize: 50, stroke: "#000", strokeThickness: 6},
-                {y: "-=10", duration: 1000, alpha: 0}
+                'Staff failed!',
+                { fontFamily: 'Amatic SC', fontSize: 50, stroke: '#000', strokeThickness: 6 },
+                { y: '-=10', duration: 1000, alpha: 0 }
             );
-        }
+        };
 
-        eventBus.on("game:staffSuccess", this.onStaffSuccess);
-        eventBus.on("game:staffFailure", this.onStaffFailure);
-        eventBus.on("game:positionChanged", this.onPositionChanged);
+        eventBus.on('game:staffSuccess', this.onStaffSuccess);
+        eventBus.on('game:staffFailure', this.onStaffFailure);
+        eventBus.on('game:positionChanged', this.onPositionChanged);
     }
 
     addToScene() {
-
         this.scene.anims.create({
-            key: "good-staff",
-            frames: "character-good-staff",
-            frameRate: 18
+            key: 'good-staff',
+            frames: 'character-good-staff',
+            frameRate: 18,
         });
 
-
         this.scene.anims.create({
-            key: "bad-staff",
-            frames: "character-bad-staff",
-            frameRate: 18
+            key: 'bad-staff',
+            frames: 'character-bad-staff',
+            frameRate: 18,
         });
 
-        this.sprite = this.scene.add.sprite(this.x, this.y, "character");
+        this.sprite = this.scene.add.follower(this.path, this.x, this.y, 'character');
         this.sprite.setScale(0.33);
     }
 
-    moveTo(x, y) {
-        
-        if(this.sprite.x < x) {
+    moveTo(x, y, duration = 1000) {
+        if (this.sprite.x < x) {
             this.sprite.flipX = false;
-        } else if(this.sprite.x > x) {
+        } else if (this.sprite.x > x) {
             this.sprite.flipX = true;
         }
-
-        this.scene.tweens.add({
+        if (this.tween) this.tween.stop();
+        this.tween = this.scene.tweens.add({
             targets: this.sprite,
-            duration: 1000,
+            duration: duration,
             x: x,
             y: y,
-            ease: "Sine.easeInOut",
+            ease: 'Sine.easeInOut',
+            onStart: () => {
+                this.moving = true;
+            },
             onComplete: () => {
-                eventBus.emit("game:turnEnded");
-            }
+                if (this.locationChange) {
+                    this.locationChange = false;
+                    eventBus.emit('game:turnEnded');
+                }
+                this.moving = false;
+            },
         });
     }
 
     cleanup() {
-        eventBus.off("game:staffSuccess", this.onStaffSuccess);
-        eventBus.off("game:staffFailure", this.onStaffFailure);
-        eventBus.off("game:positionChanged", this.onPositionChanged);
+        eventBus.off('game:staffSuccess', this.onStaffSuccess);
+        eventBus.off('game:staffFailure', this.onStaffFailure);
+        eventBus.off('game:positionChanged', this.onPositionChanged);
     }
-
 }

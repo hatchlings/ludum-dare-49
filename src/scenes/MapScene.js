@@ -5,6 +5,7 @@ import { MapIcon } from '../entities/mapicon';
 import { MapLines } from '../entities/maplines';
 import { ShardRing } from '../entities/shardring';
 import gameManager from '../managers/gamemanager';
+import character from '../model/character';
 
 const ORBIT_LOCATIONS = [
     { type: 'AIR', startAt: 0 },
@@ -34,7 +35,7 @@ export class MapScene extends Scene {
         // this.entropy = new Entropy(this);
         this.fortune = new Fortune(this, 960, 10);
         this.shardRing = new ShardRing(this);
-        this.mapLines = new MapLines(this);
+        //this.mapLines = new MapLines(this);
 
         this.orbit = new Phaser.Curves.Path(ORBIT_CENTER.x + ORBIT_WIDTH / 2, ORBIT_CENTER.y - 40);
         this.orbit.ellipseTo(ORBIT_WIDTH / 2, ORBIT_HEIGHT / 2, 0, 360, true, ORBIT_ANGLE);
@@ -51,11 +52,11 @@ export class MapScene extends Scene {
 
     update(time, delta) {
         this.updateLocations();
-        this.updateCharacter();
+        this.character.update();
     }
 
     addCharacter() {
-        this.character = new MapCharacter(this, ORBIT_CENTER.x, ORBIT_CENTER.y);
+        this.character = new MapCharacter(this, ORBIT_CENTER.x, ORBIT_CENTER.y, this.orbit);
     }
 
     addTravelPoints() {
@@ -82,8 +83,6 @@ export class MapScene extends Scene {
             island.update();
         });
     }
-
-    updateCharacter() {}
 
     returnHome() {
         this.character.cleanup();

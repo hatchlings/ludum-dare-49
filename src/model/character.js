@@ -40,9 +40,9 @@ class Character {
         return Object.values(this.stats).some((val) => val <= 0);
     }
 
-    applyPositionChange(pos, _data) {
+    applyPositionChange(location) {
         let increase = 1;
-        switch (pos) {
+        switch (location.type) {
             case 'EARTH':
                 if (this.mapPositionName === 'FIRE') increase = 2;
                 break;
@@ -56,11 +56,11 @@ class Character {
                 if (this.mapPositionName === 'AIR') increase = 2;
                 break;
             default:
-                this.mapPositionName = pos;
+                this.mapPositionName = location.type;
                 return;
         }
         this.entropy = Phaser.Math.Clamp(this.entropy + increase, 0, this.entropyCapacity);
-        this.mapPositionName = pos;
+        this.mapPositionName = location.type;
         eventBus.emit('game:entropyUpdated');
     }
 

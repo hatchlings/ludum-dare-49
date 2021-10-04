@@ -51,8 +51,8 @@ export class MapIcon {
         this.path = path;
         this.state = 1;
         this.scale = 1.0;
-        this.start = document.timeline ? document.timeline.currentTime : performance.now();
 
+        this.orbitPeriod = 120000;
         this.setupListeners();
         this.addToScene();
     }
@@ -65,6 +65,13 @@ export class MapIcon {
         return this.sprite.y;
     }
 
+    get playerLocation() {
+        return {
+            x: this.x + CHARACTER_STAND_OFFSETS[this.type].x,
+            y: this.y + CHARACTER_STAND_OFFSETS[this.type].y,
+        };
+    }
+
     update() {
         //this.updateOrbs();
         //this.updateIsland();
@@ -74,7 +81,7 @@ export class MapIcon {
         if (this.type !== 'HOME') {
             console.log('ORBIT START');
             this.sprite.startFollow({
-                duration: 60000,
+                duration: this.orbitPeriod,
                 yoyo: false,
                 repeat: -1,
                 rotateToPath: false,
@@ -83,7 +90,7 @@ export class MapIcon {
             });
             this.orbPool.forEach((orb) => {
                 orb.startFollow({
-                    duration: 60000,
+                    duration: this.orbitPeriod,
                     yoyo: false,
                     repeat: -1,
                     rotateToPath: false,
@@ -176,9 +183,11 @@ export class MapIcon {
             this.sprite.setScale(0.5);
             this.scale = 0.5;
         }
+        let target = this.sprite;
         this.sprite.pathOffset = new Phaser.Math.Vector2(0, 0);
         if (this.type !== 'HOME') {
             this.createOrbs();
+            target = this.sprite.pathOffset;
         }
 
         this.sprite.setInteractive();
@@ -188,7 +197,7 @@ export class MapIcon {
         this.sprite.on('pointerout', this.hoverOff.bind(this));
 
         this.scene.tweens.add({
-            targets: this.sprite.pathOffset,
+            targets: target,
             y: Phaser.Math.RND.pick(['-=3', '+=3']),
             duration: Phaser.Math.RND.between(1000, 2000),
             ease: 'Sine.easeInOut',
@@ -257,10 +266,7 @@ export class MapIcon {
             eventBus.emit('game:pauseOrbit');
             eventBus.emit('game:blockInput');
             this.sprite.scale = this.scale - 0.05;
-            eventBus.emit('game:positionChanged', this.type, {
-                x: this.x + CHARACTER_STAND_OFFSETS[this.type].x,
-                y: this.y + CHARACTER_STAND_OFFSETS[this.type].y,
-            });
+            eventBus.emit('game:positionChanged', this);
         }
     }
 
