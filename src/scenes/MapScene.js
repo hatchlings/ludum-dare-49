@@ -1,11 +1,8 @@
 import { Scene } from 'phaser';
-import { Entropy } from '../entities/entropy';
 import { Fortune } from '../entities/fortune';
 import { MapCharacter } from '../entities/mapcharacter';
 import { MapIcon } from '../entities/mapicon';
-import { Ressurections } from '../entities/ressurections';
 import { ShardRing } from '../entities/shardring';
-import { Stats } from '../entities/stats';
 import gameManager from '../managers/gamemanager';
 
 const TRAVEL_POS = [
@@ -27,12 +24,12 @@ export class MapScene extends Scene {
     }
 
     create() {
-        this.background = this.add.image(400, 300, 'background');
+        this.background = this.add.image(1024/2, 768/2, 'background');
 
-        this.stats = new Stats(this);
-        this.ressurections = new Ressurections(this);
-        this.entropy = new Entropy(this);
-        this.fortune = new Fortune(this, 870, 10);
+        //this.stats = new Stats(this);
+        //this.ressurections = new Ressurections(this);
+        //this.entropy = new Entropy(this);
+        this.fortune = new Fortune(this, 950, 10);
         this.shardRing = new ShardRing(this)
 
         this.addTravelPoints();
@@ -65,14 +62,16 @@ export class MapScene extends Scene {
 
     returnHome() {
         this.character.cleanup();
-        this.stats.cleanup();
-        this.ressurections.cleanup();
-        this.entropy.cleanup();
+        //this.stats.cleanup();
+        //this.ressurections.cleanup();
+        //this.entropy.cleanup();
         this.fortune.cleanup();
         this.shardRing.cleanup();
 
         this.travelPoints.forEach((tp) => {
-            tp.cleanup();
+            if(tp) {
+                tp.cleanup();
+            }
         });
 
         this.scene.start('MainScene');

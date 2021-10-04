@@ -27,7 +27,10 @@ export class ShopItem {
     createItem() {
         this.nameEntity = this.scene.add.text(this.x, this.y, this.name, {fontFamily: "Amatic SC", fontSize: 22});
         this.descriptionEntity = this.scene.add.text(400, this.y, this.description, {fontFamily: "Amatic SC", fontSize: 22});
-        this.buyEntity = this.scene.add.text(740, this.y, `BUY FOR ${this.cost} FORTUNE`, {fontFamily: "Amatic SC", fontSize: 22});
+        this.buyEntity = this.scene.add.text(740, this.y, `BUY FOR ${this.cost}`, {fontFamily: "Amatic SC", fontSize: 22});
+        
+        this.fortuneIcon = this.scene.add.sprite(820, this.y + 10, "fortunecoin");
+        this.fortuneIcon.setScale(0.20);
 
         if(this.filter && this.filter.f()) {
             this.purchasable = false;
@@ -84,7 +87,7 @@ export class ShopItem {
 
                     this.nameEntity.text = this.name;
                     this.descriptionEntity.text = this.description;
-                    this.buyEntity.text = `BUY FOR ${this.cost} FORTUNE`;
+                    this.buyEntity.text = `BUY FOR ${this.cost}`;
 
                     if(!this.purchasable) {
                         this.buyEntity.setAlpha(0.3);
