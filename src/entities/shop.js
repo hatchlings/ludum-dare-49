@@ -1,5 +1,7 @@
 import character from '../model/character';
 import eventBus from '../util/eventbus';
+import { ShopEntropy } from './shopentropy';
+import { ShopFortune } from './shopfortune';
 import { ShopItem } from './shopitem';
 
 const SHOP_ITEMS = [
@@ -29,7 +31,7 @@ const SHOP_ITEMS = [
             f: () => {
                 return character.entropyCapacity <= character.minimumEntropyCapacity;
             },
-            buyText: "UNAVAILABLE"
+            buyText: " N/A"
         }
     }
 ];
@@ -39,8 +41,55 @@ export class Shop {
     constructor(scene) {
         this.scene = scene;
 
+        this.setupUI();
         this.setupListeners();
         this.showItems();
+    }
+
+    setupUI() {
+        this.panel = this.scene.add.sprite(1024 / 2, 768 / 2, "shop");
+
+        this.shopFortune = new ShopFortune(this.scene, 410, 455);
+        this.shopEntropy = new ShopEntropy(this.scene, 695, 455);
+
+        this.ghostButton = this.scene.add.sprite(535, 555, "buttonpressed");
+        this.ghostButton.setVisible(false);
+
+        this.play = this.scene.add.text(1024 / 2 - 28, 535, "P   L   A   Y", {
+            fontFamily: "Amatic SC",
+            fontSize: 36,
+            stroke: "#000",
+            strokeThickness: 6
+        });
+
+        const cat = this.scene.add.sprite(850, 560, "cat");
+
+        this.scene.anims.create({
+            key: "squish-repeat",
+            frames: "cat-squish",
+            frameRate: 6,
+            repeat: -1
+        });
+
+        cat.setScale(0.75);
+        cat.play("squish-repeat");
+
+        this.scene.add.sprite(850, 615, "coinpile");
+        
+        this.play.setInteractive({ useHandCursor: true });
+        
+        this.play.on('pointerover', () => {
+            this.ghostButton.setVisible(true);
+        });
+  
+        this.play.on('pointerout', () => {
+            this.ghostButton.setVisible(false);
+        });
+  
+        this.play.on('pointerup', () => {
+            this.scene.goToMap();
+        });
+        
     }
 
     setupListeners() {
@@ -76,11 +125,13 @@ export class Shop {
 
     showItems() {
         SHOP_ITEMS.forEach((item, index) => {
-            new ShopItem(this.scene, 150, 150 + (50 * index), item.name, item.description, item.cost, item.upgrades, item.filter, item.quantity);
+            new ShopItem(this.scene, 150, 150 + (75 * index), item.name, item.description, item.cost, item.upgrades, item.filter, item.quantity);
         });
     }
 
     cleanup() {
+        this.shopFortune.cleanup();
+        this.shopEntropy.cleanup();
         eventBus.off("game:itemPurchased", this.onItemPurchased);
     }
 

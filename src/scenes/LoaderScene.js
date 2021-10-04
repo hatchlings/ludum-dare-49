@@ -41,6 +41,17 @@ export class LoaderScene extends Scene {
     this.load.image("orb", "/assets/final/orb.png");
     this.load.image("shard", "/assets/final/shard.png");
     this.load.image("fortunecoin", "/assets/final/fortunecoin.png");
+
+    this.load.image("deathswirl", "/assets/final/deathswirl.png");
+    this.load.image("button", "/assets/final/button.png");
+    this.load.image("buttonpressed", "/assets/final/buttonpressed.png");
+    this.load.image("smallbuttonpressed", "/assets/final/smallbuttonpressed.png");
+    this.load.image("button", "/assets/final/button.png");
+    this.load.image("overlay", "/assets/final/overlay.png");
+    this.load.image("shop", "/assets/final/shop.png");
+    this.load.image("coinpile", "/assets/final/coinpile.png");
+    this.load.image("winswirl", "/assets/final/winswirl.png");
+    this.load.image("wincharacter", "/assets/final/wincharacter.png");
     
     STAT_TYPES.forEach((type) => {
       for(let i = 1; i <= 5; i++) {
@@ -67,7 +78,7 @@ export class LoaderScene extends Scene {
         families: ["Amatic SC"]
       },
       active: () => {
-        this.scene.start("MainScene");
+        this.scene.start("MapScene");
       }
     });
   }

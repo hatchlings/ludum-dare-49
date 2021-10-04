@@ -1,6 +1,8 @@
+import { DeathScene } from "./scenes/DeathScene";
 import { LoaderScene } from "./scenes/LoaderScene";
 import { MainScene } from "./scenes/MainScene";
 import { MapScene } from "./scenes/MapScene";
+import { VictoryScene } from './scenes/VictoryScene';
 
 export const gameConfig = {
   type: Phaser.AUTO,
@@ -17,6 +19,8 @@ export const gameConfig = {
   scene: [
     LoaderScene,
     MapScene,
-    MainScene
+    MainScene,
+    DeathScene,
+    VictoryScene
   ]
 };
