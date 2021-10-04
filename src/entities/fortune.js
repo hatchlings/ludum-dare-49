@@ -21,11 +21,14 @@ export class Fortune {
     }
 
     createFortune() {
-        this.fortune = this.scene.add.text(this.x, this.y, `Fortune: ${character.fortune}`, {fontFamily: "Amatic SC", fontSize: 32, stroke: "#000", strokeThickness: 6});
+        this.fortune = this.scene.add.sprite(this.x - 20, this.y + 30, "fortunecoin");
+        this.fortune.setScale(0.25);
+
+        this.fortuneText = this.scene.add.text(this.x, this.y, character.fortune, {fontFamily: "Amatic SC", fontSize: 50, stroke: "#000", strokeThickness: 6});
     }
 
     updateFortune() {
-        this.fortune.text = `Fortune: ${character.fortune}`;
+        this.fortuneText.text = character.fortune;
     }
 
     cleanup() {
