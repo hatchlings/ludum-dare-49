@@ -26,6 +26,8 @@ export class Carousel {
             this.handlePrevious();
         });
 
+        this.buttonPrevious.setVisible(falase);
+
         this.buttonNext.setInteractive();
         this.buttonNext.on('pointerup', () => {
             this.handleNext();
@@ -39,11 +41,31 @@ export class Carousel {
     }
 
     handlePrevious() {
-        this.slideIndex = Phaser.Math.Clamp(this.slideIndex - 1, 0, this.slideTextures.length);
+        this.slideIndex = Phaser.Math.Clamp(this.slideIndex - 1, 0, this.slideTextures.length - 1);
+        this.buttonNext.text = "Next";
+
+        this.slide.texture = this.slideTextures[this.slideIndex];
+
+        if(this.slideIndex === 0) {
+            this.buttonPrevious.setVisible(false);
+        }
     }
 
     handleNext() {
-        this.slideIndex = Phaser.Math.Clamp(this.slideIndex + 1, 0, this.slideTextures.length);
+
+        if(this.buttonNext.text === "Play") {
+            console.log("Start the game!");
+            return;
+        }
+
+        this.buttonPrevious.setVisible(true);
+
+        this.slideIndex = Phaser.Math.Clamp(this.slideIndex + 1, 0, this.slideTextures.length - 1);
+        this.slide.texture = this.slideTextures[this.slideIndex];
+
+        if(this.slideIndex + 1 === this.slideTextures.length) {
+            this.buttonNext.text = "Play";
+        }
     }
 
 }
