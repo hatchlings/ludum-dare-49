@@ -3,6 +3,7 @@ import { DeathScene } from "./scenes/DeathScene";
 import { LoaderScene } from "./scenes/LoaderScene";
 import { MainScene } from "./scenes/MainScene";
 import { MapScene } from "./scenes/MapScene";
+import { TutorialScene } from './scenes/TutorialScene';
 import { VictoryScene } from './scenes/VictoryScene';
 
 export const gameConfig = {
@@ -23,6 +24,7 @@ export const gameConfig = {
     MainScene,
     DeathScene,
     VictoryScene,
-    AudioScene
+    AudioScene,
+    TutorialScene
   ]
 };

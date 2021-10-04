@@ -57,6 +57,13 @@ export class LoaderScene extends Scene {
     this.load.image("eye", "/assets/final/eye.png");
     this.load.image("shardroll", "/assets/final/shardroll.png");
     this.load.image("shield", "/assets/final/shield.png");
+
+    this.load.image("card1", "/assets/final/card1.png");
+    this.load.image("card2", "/assets/final/card2.png");
+    this.load.image("card3", "/assets/final/card3.png");
+    this.load.image("card4", "/assets/final/card4.png");
+    this.load.image("card5", "/assets/final/card5.png");
+    this.load.image("card6", "/assets/final/card6.png");
     
     STAT_TYPES.forEach((type) => {
       for(let i = 1; i <= 5; i++) {
@@ -90,7 +97,7 @@ export class LoaderScene extends Scene {
       },
       active: () => {
         this.scene.run("AudioScene");
-        this.scene.start("MapScene");
+        this.scene.start("TutorialScene");
       }
     });
   }
