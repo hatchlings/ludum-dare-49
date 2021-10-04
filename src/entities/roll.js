@@ -47,10 +47,15 @@ export class Roll {
             this.selectTween();
         }
 
+        this.onChaosHome = () => {
+            console.log("here");
+            audioManager.play(this.scene, "chits");
+        }
+
         eventBus.on("game:chaosSpin", this.onChaosSpin);
         eventBus.on("game:chaosMiss", this.onChaosMiss);
         eventBus.on("game:chaosHit", this.onChaosHit);
-
+        eventBus.on("game:chaosHome", this.onChaosHome);
     }
 
     selectTween() {
@@ -91,6 +96,7 @@ export class Roll {
         eventBus.off("game:chaosSpin", this.onChaosSpin);
         eventBus.off("game:chaosMiss", this.onChaosMiss);
         eventBus.off("game:chaosHit", this.onChaosHit);
+        eventBus.off("game:chaosHome", this.onChaosHome);
     }
 
 }

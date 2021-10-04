@@ -1,3 +1,4 @@
+import audioManager from '../managers/audiomanager';
 import character from '../model/character';
 import eventBus from '../util/eventbus';
 import { ShopEntropy } from './shopentropy';
@@ -94,6 +95,7 @@ export class Shop {
 
     setupListeners() {
         this.onItemPurchased = (name) => {
+            audioManager.play(this.scene, "chime");
             this.itemPurchased(name);
         };
 

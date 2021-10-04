@@ -1,6 +1,7 @@
 import character, { STAT_TYPES } from '../model/character';
 import eventBus from '../util/eventbus';
 import { animationTimeout } from '../util/timing';
+import audioManager from './audiomanager';
 
 // Wait times for various Animations
 const APPLY_ENTROPY_WAIT = 1000;
@@ -113,6 +114,7 @@ class GameManager {
             eventBus.emit('game:staffSuccess', quantity);
             const fortuneRoll = Phaser.Math.RND.between(1, 3);
             if (fortuneRoll <= 2) {
+                audioManager.play(this.mapScene, "chime");
                 character.addFortune();
             }
         }
@@ -125,6 +127,7 @@ class GameManager {
     }
 
     applyEntropy() {
+        eventBus.emit('game:chaosHome');
         for (let i = 0; i < character.entropy; i++) {
             const roll = Phaser.Math.RND.between(1, 6);
             if (roll < 5) {
@@ -142,8 +145,8 @@ class GameManager {
         return animationTimeout(ROLL_CHAOS_WAIT, undefined, () => {
             const roll = Phaser.Math.RND.between(1, 10);
             if (roll <= character.entropy) {
-                console.log(`Chaos HIT. Rolled ${roll}, entropy was ${character.entropy}.`);
                 eventBus.emit("game:chaosHit");
+                console.log(`Chaos HIT. Rolled ${roll}, entropy was ${character.entropy}.`);
                 return this.applyChaos();
             } else {
                 eventBus.emit("game:chaosMiss");
@@ -154,7 +157,6 @@ class GameManager {
 
     applyChaos() {
         return animationTimeout(APPLY_CHAOS_WAIT, undefined, () => {
-            eventBus.emit('game:chaosHit');
             for (let i = 0; i < character.entropyCapacity; i++) {
                 const roll = Phaser.Math.RND.between(1, 6);
                 if (roll < 5) {
