@@ -86,6 +86,7 @@ class GameManager {
             })
             .then(() => {
                 eventBus.emit('game:enableInput');
+                eventBus.emit('game:resumeOrbit');
             });
     }
 
