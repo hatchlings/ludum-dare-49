@@ -62,6 +62,7 @@ export class ShardRing {
     createShards() {
         this.pointPool.forEach((p) => {
             const shard = this.scene.add.sprite(p.x + (1024 / 2), p.y + (768 / 2), "shard");
+            shard.setScale(0.5);
             shard.setAlpha(0.3);
             shard.activeShard = false;
             this.shardPool.push(shard);
@@ -78,6 +79,7 @@ export class ShardRing {
         console.log(`Sending shard ${this.entropyIndex} to type ${type}`);
         let attackShard = this.shardPool[this.entropyIndex];    
         let duplicateShard = this.scene.add.sprite(attackShard.x, attackShard.y, "shard");
+        duplicateShard.setScale(0.5);
 
         attackShard.setAlpha(0.3);
 

@@ -154,8 +154,8 @@ export class MapIcon {
 
         this.scene.tweens.add({
             targets: this.sprite,
-            y: '-=3',
-            duration: 1000,
+            y: Phaser.Math.RND.pick(['-=3', '+=3']),
+            duration: Phaser.Math.RND.between(1000, 2000),
             ease: 'Sine.easeInOut',
             yoyo: true,
             repeat: -1,
@@ -227,7 +227,6 @@ export class MapIcon {
     }
 
     onHit() {
-        console.log("here??");
         this.scene.tweens.add({
             targets: this.sprite,
             x: Phaser.Math.RND.pick(["-=10", "+=10"]),
