@@ -25,9 +25,9 @@ class GameManager {
     }
 
     positionChanged(pos, _data, name) {
-        character.applyPositionChange(pos, _data, name);
+        character.applyPositionChange(pos, _data);
         console.log(
-            `Position changed. Now located at ${name}, entropy is now ${character.entropy}.`
+            `Position changed. Now located at ${pos}, entropy is now ${character.entropy}.`
         );
     }
 

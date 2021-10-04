@@ -40,26 +40,35 @@ class Character {
         return Object.values(this.stats).some((val) => val <= 0);
     }
 
-    applyPositionChange(pos, _data, name) {
-        if (name !== 'HOME') {
-            if (this.mapPosition === 0 || pos === 0) {
-                this.entropy = Phaser.Math.Clamp(this.entropy + 1, 0, this.entropyCapacity);
-            } else if (Math.abs(this.mapPosition - pos) === 2) {
-                this.entropy = Phaser.Math.Clamp(this.entropy + 2, 0, this.entropyCapacity);
-            } else {
-                this.entropy = Phaser.Math.Clamp(this.entropy + 1, 0, this.entropyCapacity);
-            }
-            eventBus.emit('game:entropyUpdated');
+    applyPositionChange(pos, _data) {
+        let increase = 1;
+        switch (pos) {
+            case 'EARTH':
+                if (this.mapPositionName === 'FIRE') increase = 2;
+                break;
+            case 'FIRE':
+                if (this.mapPositionName === 'EARTH') increase = 2;
+                break;
+            case 'AIR':
+                if (this.mapPositionName === 'WATER') increase = 2;
+                break;
+            case 'WATER':
+                if (this.mapPositionName === 'AIR') increase = 2;
+                break;
+            default:
+                this.mapPositionName = pos;
+                return;
         }
-        this.mapPosition = pos;
-        this.mapPositionName = name;
+        this.entropy = Phaser.Math.Clamp(this.entropy + increase, 0, this.entropyCapacity);
+        this.mapPositionName = pos;
+        eventBus.emit('game:entropyUpdated');
     }
 
     applyStat(stat, quantity) {
         this.stats[stat] = Phaser.Math.Clamp(this.stats[stat] + quantity, 0, 10);
         eventBus.emit('game:statsUpdated');
-        if(quantity < 0) {
-            eventBus.emit("game:damageIsland", stat);
+        if (quantity < 0) {
+            eventBus.emit('game:damageIsland', stat);
         }
     }
 

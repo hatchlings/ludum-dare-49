@@ -8,14 +8,16 @@ import { ShardRing } from '../entities/shardring';
 import { Stats } from '../entities/stats';
 import gameManager from '../managers/gamemanager';
 
-const TRAVEL_POS = [
-    { x: 512, y: 90 },
-    { x: 874, y: 384 },
-    { x: 512, y: 618 },
-    { x: 150, y: 394 },
+const ORBIT_LOCATIONS = [
+    { type: 'AIR', startAt: 0 },
+    { type: 'FIRE', startAt: 0.75 },
+    { type: 'WATER', startAt: 0.5 },
+    { type: 'EARTH', startAt: 0.25 },
 ];
-
-const LOCATIONS = ['EARTH', 'AIR', 'FIRE', 'WATER'];
+const ORBIT_CENTER = { x: 512, y: 390 }; //Also HOME position
+const ORBIT_WIDTH = 740;
+const ORBIT_HEIGHT = 480;
+const ORBIT_ANGLE = 10; //degrees
 
 export class MapScene extends Scene {
     constructor() {
@@ -33,35 +35,53 @@ export class MapScene extends Scene {
         this.ressurections = new Ressurections(this);
         this.entropy = new Entropy(this);
         this.fortune = new Fortune(this, 870, 10);
-        this.shardRing = new ShardRing(this)
+        this.shardRing = new ShardRing(this);
+
+        this.orbit = new Phaser.Curves.Path(ORBIT_CENTER.x + 390, ORBIT_CENTER.y);
+        this.orbit.ellipseTo(ORBIT_WIDTH / 2, ORBIT_HEIGHT / 2, 0, 360, true, ORBIT_ANGLE);
 
         this.addTravelPoints();
+        this.addLocations();
         this.addCharacter();
 
         this.input.keyboard.on('keyup-B', () => {
             this.scene.start('MainScene');
+            this.startOrbits();
         });
+    }
+
+    update(time, delta) {
+        this.updateLocations();
+        this.updateCharacter();
     }
 
     addCharacter() {
-        this.character = new MapCharacter(this, 512, 384);
+        this.character = new MapCharacter(this, ORBIT_CENTER.x, ORBIT_CENTER.y);
     }
 
     addTravelPoints() {
-        const home = new MapIcon(this, 512, 384, 'HOME', 0);
+        const home = new MapIcon(this, ORBIT_CENTER.x, ORBIT_CENTER.y, 'HOME');
         this.travelPoints.push(home);
+    }
 
-        LOCATIONS.forEach((location, index) => {
-            const tp = new MapIcon(
-                this,
-                TRAVEL_POS[index].x,
-                TRAVEL_POS[index].y,
-                location,
-                index + 1
-            );
-            this.travelPoints.push(tp);
+    addLocations() {
+        this.orbitLocations = ORBIT_LOCATIONS.map((location) => {
+            return new MapIcon(this, 0, 0, location.type, this.orbit, location.startAt);
         });
     }
+
+    startOrbits() {
+        this.orbitLocations.forEach((island) => {
+            island.startOrbit();
+        });
+    }
+
+    updateLocations() {
+        this.orbitLocations.forEach((island) => {
+            island.update();
+        });
+    }
+    updateCharacter() {}
 
     returnHome() {
         this.character.cleanup();
