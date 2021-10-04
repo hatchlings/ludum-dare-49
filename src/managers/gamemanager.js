@@ -161,6 +161,7 @@ class GameManager {
                     const type = STAT_TYPES[roll - 1];
                     if (character.shield > 0) {
                         character.reduceShieldDurability();
+                        eventBus.emit(`game:${type}Shield`);
                         console.log(
                             `Shield blocked Chaos hit to ${type}! Remaining shield: ${character.shield}`
                         );
