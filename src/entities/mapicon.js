@@ -58,12 +58,10 @@ export class MapIcon {
     }
 
     get x() {
-        console.log(`${this.type} at ${this.sprite.pathVector.x}`);
         return this.sprite.x;
     }
 
     get y() {
-        console.log(`${this.type} at ${this.sprite.pathVector.y}`);
         return this.sprite.y;
     }
 
@@ -157,17 +155,16 @@ export class MapIcon {
             this.scale = 0.75;
 
             this.scene.anims.create({
-                key: "squish",
-                frames: "cat-squish",
-                frameRate: 8
+                key: 'squish',
+                frames: 'cat-squish',
+                frameRate: 8,
             });
 
             this.onChaos = () => {
-                this.sprite.play("squish");
+                this.sprite.play('squish');
             };
 
-            eventBus.on("game:chaosHit", this.onChaos);
-
+            eventBus.on('game:chaosHit', this.onChaos);
         } else {
             let startPoint = this.path.getPoint(0);
             this.sprite = this.scene.add.follower(
@@ -383,9 +380,8 @@ export class MapIcon {
     }
 
     cleanup() {
-
-        if(this.onChaos) {
-            eventBus.off("game:chaosHit", this.onChaos);
+        if (this.onChaos) {
+            eventBus.off('game:chaosHit', this.onChaos);
         }
 
         eventBus.off('game:pauseOrbit', this.fnPause);
