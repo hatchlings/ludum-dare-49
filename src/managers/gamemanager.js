@@ -7,7 +7,7 @@ const APPLY_ENTROPY_WAIT = 1000;
 const DEATH_WAIT = 3000;
 const RESET_ENTROPY_WAIT = 1000;
 const APPLY_CHAOS_WAIT = 1000;
-const ROLL_CHAOS_WAIT = 1000;
+const ROLL_CHAOS_WAIT = 2000;
 const APPLY_STAT_BONUS_WAIT = 1000;
 const WIN_WAIT = 2000;
 
@@ -138,12 +138,15 @@ class GameManager {
     }
 
     rollForChaos() {
+        eventBus.emit("game:chaosSpin");
         return animationTimeout(ROLL_CHAOS_WAIT, undefined, () => {
             const roll = Phaser.Math.RND.between(1, 10);
             if (roll <= character.entropy) {
                 console.log(`Chaos HIT. Rolled ${roll}, entropy was ${character.entropy}.`);
+                eventBus.emit("game:chaosHit");
                 return this.applyChaos();
             } else {
+                eventBus.emit("game:chaosMiss");
                 console.log(`Chaos MISSED. Rolled ${roll}, entropy was ${character.entropy}.`);
             }
         });

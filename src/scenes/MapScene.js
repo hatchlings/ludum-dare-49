@@ -2,6 +2,7 @@ import { Scene } from 'phaser';
 import { Fortune } from '../entities/fortune';
 import { MapCharacter } from '../entities/mapcharacter';
 import { MapIcon } from '../entities/mapicon';
+import { Roll } from '../entities/roll';
 import { ShardRing } from '../entities/shardring';
 import gameManager from '../managers/gamemanager';
 import gameState from '../model/gamestate';
@@ -53,6 +54,9 @@ export class MapScene extends Scene {
         this.addTravelPoints();
         this.addLocations();
         this.addCharacter();
+        
+        this.roll = new Roll(this);
+
         this.startOrbits();
 
         this.input.keyboard.on('keyup-B', () => {
@@ -101,6 +105,8 @@ export class MapScene extends Scene {
         // this.entropy.cleanup();
         this.fortune.cleanup();
         this.fortune.hideFortune();
+
+        this.roll.cleanup();
         
         this.shardRing.cleanup();
 
