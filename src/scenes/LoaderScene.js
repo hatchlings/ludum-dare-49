@@ -79,9 +79,11 @@ export class LoaderScene extends Scene {
     this.load.audio("large-stat-increase", "/assets/final/audio/largestatincrease.mp3");
     this.load.audio("whiff", "/assets/final/audio/whiff.mp3");
     this.load.audio("chaosroll", "/assets/final/audio/chaosroll.mp3");
-    this.load.audio("chaoshits", "/assets/final/audio/chaoshits.mp3");
+    this.load.audio("chaoshits", "/assets/final/audio/chaoshitsgongs.mp3");
     this.load.audio("whitenoise", "/assets/final/audio/whitenoise.mp3");
     this.load.audio("melody", "/assets/final/audio/melody.mp3");
+    this.load.audio("chits", "/assets/final/audio/chits.mp3");
+    this.load.audio("chime", "/assets/final/audio/shopchime.mp3");
 
 
     /* Weird singleton behavior */
