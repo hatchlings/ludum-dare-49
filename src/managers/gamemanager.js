@@ -101,16 +101,17 @@ class GameManager {
 
         if (quantity <= 0) {
             console.log(`${character.staffName} failed! Stats: ${character.staffStats}.`);
+            eventBus.emit("game:staffFailure")
         } else {
+            eventBus.emit("game:staffSuccess", quantity)
             const fortuneRoll = Phaser.Math.RND.between(1, 3);
             if (fortuneRoll <= 2) {
                 character.addFortune();
             }
         }
 
-        character.applyStat(type, quantity);
+        character.applyStat(type, quantity);;
 
-        eventBus.emit('game:fortuneUpdated');
         console.log(`${type} increased by ${quantity}. ${type} is now ${character.stats[type]}.`);
 
         return animationTimeout(APPLY_STAT_BONUS_WAIT, undefined, () => {});
@@ -143,6 +144,7 @@ class GameManager {
 
     applyChaos() {
         return animationTimeout(APPLY_CHAOS_WAIT, undefined, () => {
+            eventBus.emit("game:chaosHit");
             for (let i = 0; i < character.entropyCapacity; i++) {
                 const roll = Phaser.Math.RND.between(1, 6);
                 if (roll < 5) {

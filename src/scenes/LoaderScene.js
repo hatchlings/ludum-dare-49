@@ -30,8 +30,14 @@ export class LoaderScene extends Scene {
 
 
     this.load.image("background", "/assets/final/background.png");
+
     this.load.image("character", "/assets/final/character.png");
+    this.load.atlas("character-good-staff", "/assets/final/goodstaffsprite.png", "/assets/final/goodstaffsprite.json");
+    this.load.atlas("character-bad-staff", "/assets/final/badstaffsprite.png", "/assets/final/badstaffsprite.json");
+
     this.load.image("cat", "/assets/final/chaoscat.png");
+    this.load.atlas("cat-squish", "/assets/final/chaoscatsquish.png", "/assets/final/chaoscatsquish.json");
+
     this.load.image("orb", "/assets/final/orb.png");
     this.load.image("shard", "/assets/final/shard.png");
     this.load.image("fortunecoin", "/assets/final/fortunecoin.png");
@@ -44,6 +50,9 @@ export class LoaderScene extends Scene {
         this.load.image(`${type}-${i}`, `/assets/final/${type}/${type}-${i}.png`);
       }
     });
+
+    this.load.audio("small-stat-increase", "/assets/final/audio/smallstatincrease.mp3");
+    this.load.audio("large-stat-increase", "/assets/final/audio/largestatincrease.mp3");
 
     /* Weird singleton behavior */
     void character;
