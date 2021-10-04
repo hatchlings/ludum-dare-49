@@ -1,3 +1,4 @@
+import { AudioScene } from './scenes/AudioScene';
 import { DeathScene } from "./scenes/DeathScene";
 import { LoaderScene } from "./scenes/LoaderScene";
 import { MainScene } from "./scenes/MainScene";
@@ -21,6 +22,7 @@ export const gameConfig = {
     MapScene,
     MainScene,
     DeathScene,
-    VictoryScene
+    VictoryScene,
+    AudioScene
   ]
 };

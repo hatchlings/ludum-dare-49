@@ -3,6 +3,7 @@ import { Fortune } from '../entities/fortune';
 import { MapCharacter } from '../entities/mapcharacter';
 //import { MapLines } from '../entities/maplines';
 import { MapIcon } from '../entities/mapicon';
+import { Roll } from '../entities/roll';
 import { ShardRing } from '../entities/shardring';
 import gameManager from '../managers/gamemanager';
 import gameState from '../model/gamestate';
@@ -29,12 +30,7 @@ export class MapScene extends Scene {
     }
 
     create() {
-        this.background = this.add.image(
-            this.cameras.main.width / 2,
-            this.cameras.main.height / 2,
-            'background'
-        );
-        this.background.setScale(0.64);
+        this.background = this.add.image(400, 300, 'background');
 
         // this.stats = new Stats(this);
         // this.ressurections = new Ressurections(this);
@@ -43,11 +39,11 @@ export class MapScene extends Scene {
         gameState.blockingMapInput = false;
 
         this.onWin = () => {
-            this.scene.run('VictoryScene');
+            this.scene.run("VictoryScene");
             this.scene.pause();
         };
 
-        eventBus.on('game:win', this.onWin);
+        eventBus.on("game:win", this.onWin);
 
         this.fortune = new Fortune(this, 960, 10);
         this.shardRing = new ShardRing(this);
@@ -59,6 +55,9 @@ export class MapScene extends Scene {
         this.addLocations();
         //this.mapLines = new MapLines(this, ORBIT_CENTER);
         this.addCharacter();
+        
+        this.roll = new Roll(this);
+
         this.startOrbits();
 
         this.input.keyboard.on('keyup-B', () => {
@@ -109,13 +108,15 @@ export class MapScene extends Scene {
         this.fortune.cleanup();
         this.fortune.hideFortune();
 
+        this.roll.cleanup();
+        
         this.shardRing.cleanup();
 
         this.travelPoints.forEach((tp) => {
             tp.cleanup();
         });
 
-        eventBus.off('game:win', this.onWin);
+        eventBus.off("game:win", this.onWin);
         this.scene.run('DeathScene');
     }
 }

@@ -52,6 +52,7 @@ export class MapCharacter {
 
         this.onStaffFailure = () => {
             this.sprite.play('bad-staff');
+            audioManager.play(this.scene, "whiff");
             new AnimatedText(
                 this.scene,
                 this.sprite.x,

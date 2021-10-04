@@ -1,6 +1,7 @@
 import character from '../model/character';
 import gameState from '../model/gamestate';
 import eventBus from '../util/eventbus';
+import { AnimatedText } from './animatedtext';
 
 const CHARACTER_STAND_OFFSETS = {
     EARTH: { x: 60, y: 70 },
@@ -126,6 +127,10 @@ export class MapIcon {
             this.onHit();
         };
 
+        this.onTypeShield = () => {
+            this.onShield();
+        };
+
         this.fnPause = this.pauseOrbit.bind(this);
         this.fnResume = this.resumeOrbit.bind(this);
 
@@ -133,6 +138,7 @@ export class MapIcon {
         eventBus.on('game:resumeOrbit', this.fnResume);
 
         eventBus.on(`game:${this.type}Hit`, this.onTypeHit);
+        eventBus.on(`game:${this.type}Shield`, this.onTypeShield);
         eventBus.on('game:statsUpdated', this.onStatsUpdated);
     }
 
@@ -286,6 +292,29 @@ export class MapIcon {
         });
     }
 
+    onShield() {
+        const shield = this.scene.add.sprite(this.sprite.x, this.sprite.y, "shield");
+        shield.setScale(0.45);
+
+        new AnimatedText(
+            this.scene,
+            this.sprite.x - 40,
+            this.sprite.y,
+            `Blocked!`,
+            { fontFamily: 'Amatic SC', fontSize: 50, stroke: '#000', strokeThickness: 6 },
+            { y: '-=10', duration: 1500, alpha: 0 }
+        );
+
+        this.scene.tweens.add({
+            targets: shield,
+            duration: 1500,
+            alpha: 0,
+            onComplete: () => {
+                shield.destroy();
+            }
+        });
+    }
+
     calculateState() {
         const stat = character.stats[this.type];
         let newState = this.state;
@@ -392,6 +421,7 @@ export class MapIcon {
 
         eventBus.off('game:pauseOrbit', this.fnPause);
         eventBus.off('game:resumeOrbit', this.fnResume);
+        eventBus.off(`game:${this.type}Shield`, this.onTypeShield);
         eventBus.off(`game:${this.type}Hit`, this.onTypeHit);
         eventBus.off('game:statsUpdated', this.onStatsUpdated);
         eventBus.off('game:statsUpdated', this.onStatsUpdated);

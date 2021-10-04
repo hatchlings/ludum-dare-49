@@ -65,6 +65,11 @@ export class LoaderScene extends Scene {
         this.load.image('coinpile', '/assets/final/coinpile.png');
         this.load.image('winswirl', '/assets/final/winswirl.png');
         this.load.image('wincharacter', '/assets/final/wincharacter.png');
+        this.load.image('fishbone', '/assets/final/fishbone.png');
+        this.load.image('egg', '/assets/final/egg.png');
+        this.load.image('eye', '/assets/final/eye.png');
+        this.load.image('shardroll', '/assets/final/shardroll.png');
+        this.load.image('shield', '/assets/final/shield.png');
 
         STAT_TYPES.forEach((type) => {
             for (let i = 1; i <= 5; i++) {
@@ -80,6 +85,11 @@ export class LoaderScene extends Scene {
 
         this.load.audio('small-stat-increase', '/assets/final/audio/smallstatincrease.mp3');
         this.load.audio('large-stat-increase', '/assets/final/audio/largestatincrease.mp3');
+        this.load.audio('whiff', '/assets/final/audio/whiff.mp3');
+        this.load.audio('chaosroll', '/assets/final/audio/chaosroll.mp3');
+        this.load.audio('chaoshits', '/assets/final/audio/chaoshits.mp3');
+        this.load.audio('whitenoise', '/assets/final/audio/whitenoise.mp3');
+        this.load.audio('melody', '/assets/final/audio/melody.mp3');
 
         /* Weird singleton behavior */
         void character;
@@ -94,6 +104,7 @@ export class LoaderScene extends Scene {
                 families: ['Amatic SC'],
             },
             active: () => {
+                this.scene.run('AudioScene');
                 this.scene.start('MapScene');
             },
         });
