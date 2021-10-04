@@ -204,11 +204,13 @@ export class MapIcon {
         let newState = this.state;
 
         if(stat <= 0) {
-            this.scene.tweens.add({
-                targets: this.orbPool.concat([this.sprite]),
-                alpha: 0,
-                duration: 250
-            });
+            setTimeout(() => {
+                this.scene.tweens.add({
+                    targets: this.orbPool.concat([this.sprite]),
+                    alpha: 0,
+                    duration: 250
+                });
+            }, 1000);
         }
 
         if(stat < 4) {
