@@ -5,6 +5,8 @@ import { MapIcon } from '../entities/mapicon';
 import { MapLines } from '../entities/maplines';
 import { ShardRing } from '../entities/shardring';
 import gameManager from '../managers/gamemanager';
+import gameState from '../model/gamestate';
+import eventBus from '../util/eventbus';
 
 const ORBIT_LOCATIONS = [
     { type: 'AIR', startAt: 0 },
@@ -32,6 +34,16 @@ export class MapScene extends Scene {
         // this.stats = new Stats(this);
         // this.ressurections = new Ressurections(this);
         // this.entropy = new Entropy(this);
+
+        gameState.blockingMapInput = false;
+
+        this.onWin = () => {
+            this.scene.run("VictoryScene");
+            this.scene.pause();
+        };
+
+        eventBus.on("game:win", this.onWin);
+
         this.fortune = new Fortune(this, 960, 10);
         this.shardRing = new ShardRing(this);
         this.mapLines = new MapLines(this);
@@ -91,12 +103,16 @@ export class MapScene extends Scene {
         // this.ressurections.cleanup();
         // this.entropy.cleanup();
         this.fortune.cleanup();
+        this.fortune.hideFortune();
+
         this.shardRing.cleanup();
 
         this.travelPoints.forEach((tp) => {
             tp.cleanup();
         });
 
-        this.scene.start('MainScene');
+        eventBus.off("game:win", this.onWin);
+
+        this.scene.run('DeathScene');
     }
 }

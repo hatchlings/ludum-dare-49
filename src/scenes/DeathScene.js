@@ -1,4 +1,5 @@
 import { Scene } from "phaser";
+import character from '../model/character';
 
 const FLAVOR_TEXT_CONFIG = {
     fontFamily: "Amatic SC",
@@ -11,15 +12,6 @@ export class DeathScene extends Scene {
 
   constructor() {
     super({key: "DeathScene"});
-
-    this.chaos = 0;
-    this.fortune = 0;
-
-  }
-
-  init(data) {
-      this.chaos = data.chaos || this.chaos;
-      this.fortune = data.fortune || this.fortune;
   }
 
   create() {
@@ -43,8 +35,8 @@ export class DeathScene extends Scene {
       graphics.fillStyle(0x630460, 1);
       graphics.fillRoundedRect(370, 400, 320, 110, 16);
 
-      this.add.text(1024 / 2 - 110, 405, `Bane of chaos        +  ${this.chaos}`, FLAVOR_TEXT_CONFIG);
-      this.add.text(1024 / 2 - 120, 455, `Bane of fortune     +  ${this.fortune}`, FLAVOR_TEXT_CONFIG);
+      this.add.text(1024 / 2 - 110, 405, `Bane of chaos        +  ${character.lastBane}`, FLAVOR_TEXT_CONFIG);
+      this.add.text(1024 / 2 - 120, 455, `Boon of fortune     +  ${character.lastBoon}`, FLAVOR_TEXT_CONFIG);
 
       const shard = this.add.sprite(660, 425, "shard");
       shard.setScale(0.33);
@@ -72,10 +64,11 @@ export class DeathScene extends Scene {
       });
 
       button.on('pointerup', () => {
-          console.log("Do something...");
+          this.scene.run("MainScene");
+          this.scene.stop();
       });
 
-      this.add.text(1024 / 2 - 35, 535, "Resurrect", FLAVOR_TEXT_CONFIG);
+      this.add.text(1024 / 2 - 35, 535, "   S H O P  ", FLAVOR_TEXT_CONFIG);
 
   }
 

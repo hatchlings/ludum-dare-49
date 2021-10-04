@@ -21,7 +21,11 @@ export class MainScene extends Scene {
 
   goToMap() {
     this.cleanup();
+
+    this.scene.stop("MapScene");
     this.scene.start("MapScene");
+    
+    this.scene.stop();
   }
 
   cleanup() {
