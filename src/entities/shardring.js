@@ -64,7 +64,7 @@ export class ShardRing {
         this.pointPool.forEach((p) => {
             const shard = this.scene.add.sprite(p.x + 1024 / 2, p.y + 768 / 2, 'shard');
             shard.setScale(0.5);
-            shard.setAlpha(0.3);
+            shard.setAlpha(0.7);
             shard.activeShard = false;
             this.shardPool.push(shard);
         });
@@ -82,7 +82,7 @@ export class ShardRing {
         let duplicateShard = this.scene.add.sprite(attackShard.x, attackShard.y, 'shard');
         duplicateShard.setScale(0.5);
 
-        attackShard.setAlpha(0.3);
+        attackShard.setAlpha(0.7);
 
         //const dest = ATTACK_POS[type];
         const dest = this.scene.travelPoints.find((tp) => tp.type === type);
@@ -150,7 +150,7 @@ export class ShardRing {
                 if (index < this.currentEntropy) {
                     shard.setAlpha(1);
                 } else {
-                    shard.setAlpha(0.3);
+                    shard.setAlpha(0.7);
                 }
             });
         }
