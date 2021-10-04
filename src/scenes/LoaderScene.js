@@ -52,6 +52,7 @@ export class LoaderScene extends Scene {
 
         this.load.image('orb', '/assets/final/orb.png');
         this.load.image('shard', '/assets/final/shard.png');
+        this.load.image('shardspark', 'assets/final/emitterspark.png');
         this.load.image('fortunecoin', '/assets/final/fortunecoin.png');
 
         this.load.image('deathswirl', '/assets/final/deathswirl.png');
