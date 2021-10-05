@@ -27,7 +27,7 @@ class Character {
         this.fortune = 0;
 
         this.staffName = 'Basic Staff';
-        this.staffStats = [-1, -1, 0, 1];
+        this.staffStats = [-1, -1, -1, -1, 0, 0, 0, 0, 1, 1];
 
         this.shield = 0;
 
@@ -81,13 +81,13 @@ class Character {
     }
 
     applyRndBoon() {
-        this.lastBoon = Phaser.Math.RND.pick([1,1,1,1,2,3]);
+        this.lastBoon = Phaser.Math.RND.pick([1, 1, 1, 1, 2, 3]);
         this.fortune += this.lastBoon;
         eventBus.emit('game:fortuneUpdated', this.lastBoon);
     }
 
     applyRndBane() {
-        this.lastBane = Phaser.Math.RND.pick([0, 0, 1, 2, 3])
+        this.lastBane = Phaser.Math.RND.pick([0, 0, 1, 2, 3]);
         this.entropyCapacity += this.lastBane;
         eventBus.emit('game:entropyUpdated');
     }

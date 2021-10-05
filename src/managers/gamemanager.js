@@ -15,6 +15,7 @@ const WIN_WAIT = 2000;
 class GameManager {
     constructor() {
         this.setupListeners();
+        this.moveCount = 0;
     }
 
     setScene(scene) {
@@ -72,8 +73,7 @@ class GameManager {
 
                 return new Promise((resolve) => {
                     setTimeout(() => {
-
-                        if(character.isWinner) {
+                        if (character.isWinner) {
                             resolve(this.handleWinner());
                         }
 
@@ -92,6 +92,8 @@ class GameManager {
     }
 
     processTurn() {
+        this.moveCount += 1;
+        console.log(`Move Count: ${this.moveCount}`);
         console.log(
             `STATS: Earth: ${character.stats['EARTH']} Air: ${character.stats['AIR']} FIRE: ${character.stats['FIRE']} Water: ${character.stats['WATER']}`
         );
@@ -114,7 +116,7 @@ class GameManager {
             eventBus.emit('game:staffSuccess', quantity);
             const fortuneRoll = Phaser.Math.RND.between(1, 3);
             if (fortuneRoll <= 2) {
-                audioManager.play(this.mapScene, "chime");
+                audioManager.play(this.mapScene, 'chime');
                 character.addFortune();
             }
         }
@@ -141,16 +143,16 @@ class GameManager {
     }
 
     rollForChaos() {
-        eventBus.emit("game:chaosSpin");
+        eventBus.emit('game:chaosSpin');
         return animationTimeout(ROLL_CHAOS_WAIT, undefined, () => {
             const roll = Phaser.Math.RND.between(1, 10);
-            if (roll <= character.entropy) {
-                eventBus.emit("game:chaosHit");
+            if (this.moveCount <= 2 || roll > character.entropy) {
+                eventBus.emit('game:chaosMiss');
+                console.log(`Chaos MISSED. Rolled ${roll}, entropy was ${character.entropy}.`);
+            } else {
+                eventBus.emit('game:chaosHit');
                 console.log(`Chaos HIT. Rolled ${roll}, entropy was ${character.entropy}.`);
                 return this.applyChaos();
-            } else {
-                eventBus.emit("game:chaosMiss");
-                console.log(`Chaos MISSED. Rolled ${roll}, entropy was ${character.entropy}.`);
             }
         });
     }
@@ -192,12 +194,10 @@ class GameManager {
 
     handleWinner() {
         return animationTimeout(WIN_WAIT, undefined, () => {
-            eventBus.emit("game:win");
+            eventBus.emit('game:win');
         });
     }
-
 }
-
 
 let gameManager = new GameManager();
 export default gameManager;

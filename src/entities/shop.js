@@ -7,38 +7,35 @@ import { ShopItem } from './shopitem';
 
 const SHOP_ITEMS = [
     {
-        name: "Improved Staff",
-        description: "Your staff fails less",
+        name: 'Improved Staff',
+        description: 'Your staff fails less',
         cost: 3,
         upgrades: [
-            {name: "Advanced Staff", description: "Your staff fails even less", cost: 5},
-            {name: "Superior Staff", description: "Your staff never fails", cost: 8}
-        ]
+            { name: 'Advanced Staff', description: 'Your staff fails even less', cost: 5 },
+            { name: 'Superior Staff', description: 'Your staff never fails', cost: 8 },
+        ],
     },
     {
-        name: "Shield",
-        description: "Block Chaos hits",
+        name: 'Shield',
+        description: 'Block Chaos hits',
         cost: 1,
-        upgrades: [
-            {name: "Advanced Shield", description: "Block even more Chaos hits", cost: 5}
-        ]
+        upgrades: [{ name: 'Advanced Shield', description: 'Block even more Chaos hits', cost: 5 }],
     },
     {
-        name: "Decrease Entropy",
-        description: "Entropy pool is decreased by one",
+        name: 'Decrease Entropy',
+        description: 'Entropy pool is decreased by one',
         cost: 1,
-        quantity: "UNLIMITED",
+        quantity: 'UNLIMITED',
         filter: {
             f: () => {
                 return character.entropyCapacity <= character.minimumEntropyCapacity;
             },
-            buyText: " N/A"
-        }
-    }
+            buyText: ' N/A',
+        },
+    },
 ];
 
 export class Shop {
-
     constructor(scene) {
         this.scene = scene;
 
@@ -48,78 +45,77 @@ export class Shop {
     }
 
     setupUI() {
-        this.panel = this.scene.add.sprite(1024 / 2, 768 / 2, "shop");
+        this.panel = this.scene.add.sprite(1024 / 2, 768 / 2, 'shop');
 
         this.shopFortune = new ShopFortune(this.scene, 410, 455);
         this.shopEntropy = new ShopEntropy(this.scene, 695, 455);
 
-        this.ghostButton = this.scene.add.sprite(535, 555, "buttonpressed");
+        this.ghostButton = this.scene.add.sprite(535, 555, 'buttonpressed');
         this.ghostButton.setVisible(false);
 
-        this.play = this.scene.add.text(1024 / 2 - 28, 535, "P   L   A   Y", {
-            fontFamily: "Amatic SC",
+        this.play = this.scene.add.text(1024 / 2 - 28, 535, 'P   L   A   Y', {
+            fontFamily: 'Amatic SC',
             fontSize: 36,
-            stroke: "#000",
-            strokeThickness: 6
+            stroke: '#000',
+            strokeThickness: 6,
         });
 
-        const cat = this.scene.add.sprite(850, 560, "cat");
+        const cat = this.scene.add.sprite(850, 560, 'cat');
 
         this.scene.anims.create({
-            key: "squish-repeat",
-            frames: "cat-squish",
+            key: 'squish-repeat',
+            frames: 'cat-squish',
             frameRate: 6,
-            repeat: -1
+            repeat: -1,
         });
 
         cat.setScale(0.75);
-        cat.play("squish-repeat");
+        cat.play('squish-repeat');
 
-        this.scene.add.sprite(850, 615, "coinpile");
-        
+        this.scene.add.sprite(850, 615, 'coinpile');
+
         this.play.setInteractive({ useHandCursor: true });
-        
+
         this.play.on('pointerover', () => {
             this.ghostButton.setVisible(true);
         });
-  
+
         this.play.on('pointerout', () => {
             this.ghostButton.setVisible(false);
         });
-  
+
         this.play.on('pointerup', () => {
             this.scene.goToMap();
         });
-        
     }
 
     setupListeners() {
         this.onItemPurchased = (name) => {
-            audioManager.play(this.scene, "chime");
+            audioManager.play(this.scene, 'chime');
             this.itemPurchased(name);
         };
 
-        eventBus.on("game:itemPurchased", this.onItemPurchased);
+        eventBus.on('game:itemPurchased', this.onItemPurchased);
     }
 
     itemPurchased(name) {
-        switch(name) {
-            case "Improved Staff":
-                character.setStaffStats([-1, 0, 0, 1], name);
+        switch (name) {
+            case 'Improved Staff':
+                character.setStaffStats([-1, -1, -1, 0, 0, 0, 1, 1, 1, 1], name);
                 break;
-            case "Advanced Staff":
-                character.setStaffStats([-1, 0, 1, 2], name);
+            case 'Advanced Staff':
+                character.setStaffStats([-1, -1, 0, 0, 1, 1, 1, 1, 2, 2], name);
                 break;
-            case "Superior Staff":
-                character.setStaffStats([0,0,1,1,2,3,4], name);
+            case 'Superior Staff':
+                character.setStaffStats([0, 0, 0, 1, 1, 1, 1, 2, 2, 3], name);
                 break;
-            case "Shield":
-                character.setShieldDurability(1);
+            case 'Shield':
+                character.setShieldDurability(2);
                 break;
-            case "Advanced Shield":
+            case 'Advanced Shield':
                 character.setShieldDurability(5);
                 break;
-            case "Decrease Entropy":
+            case 'Decrease Entropy':
                 character.updateEntropyPool(-1);
                 break;
         }
@@ -127,14 +123,23 @@ export class Shop {
 
     showItems() {
         SHOP_ITEMS.forEach((item, index) => {
-            new ShopItem(this.scene, 150, 150 + (75 * index), item.name, item.description, item.cost, item.upgrades, item.filter, item.quantity);
+            new ShopItem(
+                this.scene,
+                150,
+                150 + 75 * index,
+                item.name,
+                item.description,
+                item.cost,
+                item.upgrades,
+                item.filter,
+                item.quantity
+            );
         });
     }
 
     cleanup() {
         this.shopFortune.cleanup();
         this.shopEntropy.cleanup();
-        eventBus.off("game:itemPurchased", this.onItemPurchased);
+        eventBus.off('game:itemPurchased', this.onItemPurchased);
     }
-
 }
