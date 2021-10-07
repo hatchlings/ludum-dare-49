@@ -91,7 +91,7 @@ export class ShardRing {
     }
 
     attack(type) {
-        console.log(`Sending shard ${this.entropyIndex} to type ${type}`);
+        //console.log(`Sending shard ${this.entropyIndex} to type ${type}`);
         let attackShard = this.shardPool[this.entropyIndex];
         let duplicateShard = this.scene.add.sprite(attackShard.x, attackShard.y, 'shard');
         duplicateShard.setScale(0.5);
@@ -99,7 +99,7 @@ export class ShardRing {
         attackShard.setAlpha(0.7);
 
         //const dest = ATTACK_POS[type];
-        const dest = this.scene.travelPoints.find((tp) => tp.type === type);
+        let dest = this.scene.orbitLocations.find((island) => island.type === type);
         const angleBetween = Phaser.Math.Angle.Between(
             duplicateShard.x,
             duplicateShard.y,
@@ -109,17 +109,23 @@ export class ShardRing {
 
         this.scene.tweens.add({
             targets: duplicateShard,
-            duration: 500,
+            duration: 350,
             angle: angleBetween + 45,
         });
 
         this.scene.tweens.add({
             targets: duplicateShard,
-            duration: 750,
+            duration: 500,
             x: dest.x,
             y: dest.y,
             onComplete: () => {
                 eventBus.emit(`game:${type}Hit`);
+                console.log(
+                    `Shard hit ${type} at (${Number.parseInt(duplicateShard.x)},${Number.parseInt(
+                        duplicateShard.y
+                    )})`
+                );
+
                 duplicateShard.destroy();
             },
         });

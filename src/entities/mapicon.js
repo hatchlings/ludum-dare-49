@@ -126,6 +126,7 @@ export class MapIcon {
             this.orbPool.forEach((orb) => {
                 orb.pauseFollow();
             });
+            console.log(`${this.type} paused at: ${this.x}, ${this.y}`);
         }
     }
 
