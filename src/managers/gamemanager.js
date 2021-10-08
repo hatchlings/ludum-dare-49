@@ -5,10 +5,10 @@ import audioManager from './audiomanager';
 
 // Wait times for various Animations
 const APPLY_ENTROPY_WAIT = 1000;
-const DEATH_WAIT = 3000;
+const DEATH_WAIT = 2000;
 const RESET_ENTROPY_WAIT = 1000;
 const APPLY_CHAOS_WAIT = 1000;
-const ROLL_CHAOS_WAIT = 2000;
+const ROLL_CHAOS_WAIT = 1000;
 const APPLY_STAT_BONUS_WAIT = 1000;
 const WIN_WAIT = 2000;
 
@@ -163,7 +163,15 @@ class GameManager {
                 const roll = Phaser.Math.RND.between(1, 6);
                 if (roll < 5) {
                     const type = STAT_TYPES[roll - 1];
-                    if (character.shield > 0) {
+                    if (
+                        character.location.type === type &&
+                        Phaser.Math.RND.pick([true, false, false, false])
+                    ) {
+                        eventBus.emit(`game:${type}Shield`);
+                        console.log(
+                            `El blocked Chaos hit to ${type}! Remaining shield: ${character.shield}`
+                        );
+                    } else if (character.shield > 0) {
                         character.reduceShieldDurability();
                         eventBus.emit(`game:${type}Shield`);
                         console.log(

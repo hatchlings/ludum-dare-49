@@ -65,6 +65,7 @@ class Character {
         }
         this.entropy = Phaser.Math.Clamp(this.entropy + increase, 0, this.entropyCapacity);
         this.mapPositionName = location.type;
+        this.location = location;
         eventBus.emit('game:entropyUpdated');
     }
 

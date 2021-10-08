@@ -28,7 +28,7 @@ export class MapCharacter {
         this.onPositionChanged = (location) => {
             this.location = location;
             this.locationChange = true;
-            this.moveTo(location.playerLocation.x, location.playerLocation.y, 1000);
+            this.moveTo(location.playerLocation.x, location.playerLocation.y, 750);
         };
 
         this.onStaffSuccess = (quantity) => {
@@ -52,7 +52,7 @@ export class MapCharacter {
 
         this.onStaffFailure = () => {
             this.sprite.play('bad-staff');
-            audioManager.play(this.scene, "whiff");
+            audioManager.play(this.scene, 'whiff');
             new AnimatedText(
                 this.scene,
                 this.sprite.x,
