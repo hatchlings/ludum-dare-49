@@ -101,10 +101,10 @@ export class Shop {
     itemPurchased(name) {
         switch (name) {
             case 'Improved Staff':
-                character.setStaffStats([-1, -1, -1, 0, 0, 0, 1, 1, 1, 1], name);
+                character.setStaffStats([-1, -1, -1, -1, 0, 0, 0, 1, 1, 1], name);
                 break;
             case 'Advanced Staff':
-                character.setStaffStats([-1, -1, 0, 0, 1, 1, 1, 1, 2, 2], name);
+                character.setStaffStats([-1, -1, -1, 0, 0, 1, 1, 1, 2, 2], name);
                 break;
             case 'Superior Staff':
                 character.setStaffStats([0, 0, 0, 1, 1, 1, 1, 2, 2, 3], name);

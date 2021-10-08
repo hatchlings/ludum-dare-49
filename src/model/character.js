@@ -27,7 +27,7 @@ class Character {
         this.fortune = 0;
 
         this.staffName = 'Basic Staff';
-        this.staffStats = [-1, -1, -1, -1, 0, 0, 0, 0, 1, 1];
+        this.staffStats = [-1, -1, -1, -1, -1, 0, 0, 0, 0, 1];
 
         this.shield = 0;
 
