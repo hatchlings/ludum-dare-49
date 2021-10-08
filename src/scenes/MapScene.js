@@ -27,6 +27,7 @@ export class MapScene extends Scene {
         gameManager.setScene(this);
 
         this.travelPoints = [];
+        this.orbitLocations = [];
     }
 
     create() {
@@ -39,11 +40,11 @@ export class MapScene extends Scene {
         gameState.blockingMapInput = false;
 
         this.onWin = () => {
-            this.scene.run("VictoryScene");
+            this.scene.run('VictoryScene');
             this.scene.pause();
         };
 
-        eventBus.on("game:win", this.onWin);
+        eventBus.on('game:win', this.onWin);
 
         this.fortune = new Fortune(this, 960, 10);
         this.shardRing = new ShardRing(this);
@@ -55,7 +56,7 @@ export class MapScene extends Scene {
         this.addLocations();
         //this.mapLines = new MapLines(this, ORBIT_CENTER);
         this.addCharacter();
-        
+
         this.roll = new Roll(this);
 
         this.startOrbits();
@@ -76,16 +77,15 @@ export class MapScene extends Scene {
     }
 
     addTravelPoints() {
-        const home = new MapIcon(this, ORBIT_CENTER.x, ORBIT_CENTER.y, 'HOME');
+        let home = new MapIcon(this, ORBIT_CENTER.x, ORBIT_CENTER.y, 'HOME');
         this.travelPoints.push(home);
     }
 
     addLocations() {
         this.orbitLocations = ORBIT_LOCATIONS.map((location) => {
-            const tp = new MapIcon(this, 0, 0, location.type, this.orbit, location.startAt);
-            this.travelPoints.push(tp);
-            return tp;
+            return new MapIcon(this, 0, 0, location.type, this.orbit, location.startAt);
         });
+        this.travelPoints.push(...this.orbitLocations);
     }
 
     startOrbits() {
@@ -109,14 +109,14 @@ export class MapScene extends Scene {
         this.fortune.hideFortune();
 
         this.roll.cleanup();
-        
+
         this.shardRing.cleanup();
 
         this.travelPoints.forEach((tp) => {
             tp.cleanup();
         });
 
-        eventBus.off("game:win", this.onWin);
+        eventBus.off('game:win', this.onWin);
         this.scene.run('DeathScene');
     }
 }
